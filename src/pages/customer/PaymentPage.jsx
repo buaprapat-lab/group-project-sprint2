@@ -13,12 +13,12 @@ export default function PaymentPage() {
 
   return (
    
-    <div className="bg-[#eeeeee] min-h-screen py-10 font-['IBM_Plex_Sans_Thai'] text-[#242424]">
+    <div className="bg-[#eeeeee] min-h-screen py-10 font-['IBM_Plex_Sans_Thai'] text-[#242424] ">
       <main className="container mx-auto px-4 max-w-6xl">
         {/* หัวข้อปรับเป็น Bebas Neue, Uppercase, Tracking กว้างๆ ตามสไตล์ Street */}
         <h1 className="font-['Bebas_Neue'] uppercase tracking-widest text-4xl mb-8 flex items-center gap-3 text-[#242424]">
           {/* แถบตกแต่งใช้ Serious Red (#e4002b) พร้อมเงาแข็งๆ (Brutalist Shadow) */}
-          <span className="bg-[#e4002b] w-2 h-9 rounded-full border-2 border-[#242424] shadow-[4px_4px_0_#242424]"></span>
+          <span className="bg-[#e4002b] w-2 h-9 pt-12 rounded-full border-2 border-[#242424] shadow-[4px_4px_0_#242424]"></span>
           Checkout
         </h1>
 
