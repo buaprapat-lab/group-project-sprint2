@@ -129,7 +129,7 @@ const Navbarmenu = () => {
                   className="flex items-center gap-2 bg-[#242424] text-white px-4 py-2 rounded-full font-['IBM_Plex_Sans_Thai'] text-sm hover:bg-[#e4002b] transition-colors"
                 >
                   <User size={18} />
-                  <span>Account</span>
+                  <span>My Profile</span>
                 </button>
 
                 {/* Profile Dropdown */}
