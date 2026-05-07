@@ -2,7 +2,6 @@
 
 export const AUTOPLAY_INTERVAL_MS = 5000;
 export const TOAST_DURATION_MS = 2500;
-
 export const PROMOS = [
   {
     id: "p1",

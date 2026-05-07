@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbarmenu from "./component/Navbarmenu";
 import CookBoard from "./pages/CookBoard";
 import Index from "./pages/Index";
-import Order from "./pages/Order";
+import OrderPage from "./pages/Order";
 import Buttonmenu from "./component/Buttonmenu";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -12,18 +12,23 @@ import TableMap from "./pages/shared/TableMap";
 import OrderList from "./pages/cashier/OrderList";
 import OrderHistory from "./pages/cashier/OrderHistory";
 import MenuPage from "./pages/customer/MenuPage";
+// import DeliveryTracking from "./pages/customer/DeliveryTracking";
+
 
 export default function App() {
   return (
     <Router>
       <Navbarmenu />
       <Routes>
-        <Route path="/" element={<Buttonmenu />} />
+        <Route path="/" element={<Index />} />
         {/* คุณสามารถเพิ่ม Route อื่นๆ เช่น /menu หรือ /order ได้ที่นี่ */}
-        <Route path="/order" element={<Order />} />
+        <Route path="/order" element={<OrderPage />} />
         <Route path="/home" element={<Index />} />
         <Route path="/menu" element={<MenuPage />} />
-        <Route path="/custtomertrack" element={<DeliveryTracking/>} />
+        {/* <Route path="/custtomertrack" element={<DeliveryTracking/>} />
+        <Route path="/custtomertrack" element={<DeliveryTracking/>} /> */}
+        
+        
         
 
 
@@ -40,3 +45,4 @@ export default function App() {
     </Router>
   );
 }
+
