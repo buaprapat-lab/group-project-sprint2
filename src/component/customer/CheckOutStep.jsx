@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { OrdersContext } from "../../context/ordersContext/OrdersContext";
 
 export default function CheckoutSteps() {
-  const { orderList, setOrderList } = useContext(OrdersContext);
+  const { orderList } = useContext(OrdersContext); // ดึงมาแค่ orderList ไม่ต้องใช้ setOrderList แล้ว
   const [selectedAddress, setSelectedAddress] = useState("home");
   const [selectedTime, setSelectedTime] = useState("fastest");
   const [paymentMethod, setPaymentMethod] = useState("credit");
@@ -16,28 +16,9 @@ export default function CheckoutSteps() {
     { id: "1500", label: "15:00 - 15:30" },
   ];
 
-  // ฟังก์ชันสำหรับอัปเดตจำนวน (ซิงค์อัตโนมัติกับ OrderSummary ผ่าน Context)
-  const handleUpdateQty = (orderId, itemId, change) => {
-    const updated = orderList.map((order) => {
-      if (order.orderId === orderId) {
-        const key = order.List ? "List" : "orderList";
-        return {
-          ...order,
-          [key]: order[key].map((item) =>
-            item.id === itemId
-              ? { ...item, quantity: Math.max(1, item.quantity + change) } 
-              : item,
-          ),
-        };
-      }
-      return order;
-    });
-    setOrderList(updated);
-  };
-
   return (
     <div className="space-y-6">
-      {/* Step 1: รายการอาหาร */}
+      {/* Step 1: รายการอาหาร (โชว์สรุปอย่างเดียว) */}
       <div className="bg-[#262626] rounded-xl p-6 text-white border border-gray-700">
         <h2 className="text-xl font-bold mb-4 flex items-center">
           <span className="bg-orange-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-3">
@@ -76,29 +57,10 @@ export default function CheckoutSteps() {
                           <p className="text-sm text-gray-400">
                             {item.desc || ""}
                           </p>
-
-                          {/* ปุ่มเพิ่ม-ลดจำนวน */}
-                          <div className="flex items-center space-x-3 mt-2">
-                            <button
-                              onClick={() =>
-                                handleUpdateQty(order.orderId, item.id, -1)
-                              }
-                              disabled={item.quantity <= 1}
-                              className={`w-6 h-6 rounded-full border flex items-center justify-center ${item.quantity <= 1 ? "border-gray-600 text-gray-600 cursor-not-allowed" : "border-gray-400 text-white hover:bg-gray-600"}`}
-                            >
-                              -
-                            </button>
-                            <span className="font-bold text-white w-4 text-center">
-                              {item.quantity}
-                            </span>
-                            <button
-                              onClick={() =>
-                                handleUpdateQty(order.orderId, item.id, 1)
-                              }
-                              className="w-6 h-6 rounded-full border border-gray-400 text-white flex items-center justify-center hover:bg-gray-600"
-                            >
-                              +
-                            </button>
+                          
+                          {/* แสดงจำนวนสินค้า (ไม่มีปุ่มเพิ่มลด) */}
+                          <div className="text-sm text-gray-300 mt-1">
+                            จำนวน: <span className="font-bold text-white">{item.quantity}</span> รายการ
                           </div>
                         </div>
                       </div>
