@@ -2,28 +2,37 @@
 import React from "react";
 import { Plus } from "lucide-react";
 
-const MenuCard = ({ item, onAddToCart }) => {
+const MenuCard = ({ item, onAddToCart, onOpenModal }) => {
   const isSoldOut = item.soldOut === true;
 
   return (
     <div className="bg-white rounded-xl border-2 border-transparent transition-all duration-300 overflow-hidden flex flex-col h-full hover:border-[#242424] hover:-translate-y-1 hover:shadow-[8px_8px_0px_rgba(0,0,0,0.08)]">
-      <div>
-        <div className="h-45 bg-[#f0f0f0] relative overflow-hidden group">
+      {/* ส่วนที่คลิกได้ เพื่อดูรายละเอียด (เปิด Modal) */}
+      <div
+        className="cursor-pointer"
+        onClick={() => !isSoldOut && onOpenModal()}
+      >
+        <div className="h-45 bg-[#f0f0f0] relative overflow-hidden group flex items-center justify-center p-4">
           <img
             src={item.img}
             alt={item.name}
             loading="lazy"
-            className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${isSoldOut ? "grayscale opacity-50" : ""}`}
+            className={`w-full h-full object-contain transition-transform duration-500 group-hover:scale-110 ${isSoldOut ? "grayscale opacity-50" : ""}`}
+            onError={(e) => {
+              e.target.src =
+                "https://placehold.co/400x400/eeeeee/242424?text=FOOD";
+            }}
           />
         </div>
         <div className="p-5 pb-2">
-          <h3 className="font-bold text-lg mb-1 leading-tight text-[#242424]">
+          <h3 className="font-bold text-lg mb-1 leading-tight text-[#242424] group-hover:text-[#e4002b] transition-colors">
             {item.name}
           </h3>
           <p className="text-xs text-gray-500 line-clamp-2">{item.desc}</p>
         </div>
       </div>
 
+      {/* ส่วนปุ่ม Add to cart ด้านล่าง */}
       <div className="p-5 pt-0 mt-auto flex justify-between items-end">
         <span className="text-2xl font-black text-[#e4002b] font-['Bebas_Neue'] tracking-wide">
           ฿{item.price}
@@ -38,7 +47,10 @@ const MenuCard = ({ item, onAddToCart }) => {
           </button>
         ) : (
           <button
-            onClick={() => onAddToCart(item.id, item.name)}
+            onClick={(e) => {
+              e.stopPropagation(); // 🚨 ป้องกันไม่ให้คลิกปุ่มแล้วไปทริกเกอร์เปิด Modal
+              onAddToCart(item.id, item.name);
+            }}
             className="bg-[#e4002b] text-white px-3 py-2 rounded-md font-bold transition-all hover:bg-black hover:scale-105 flex items-center gap-1 text-sm"
             aria-label={`Add ${item.name} to cart`}
           >
