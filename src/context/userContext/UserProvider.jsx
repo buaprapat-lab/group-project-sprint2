@@ -2,18 +2,14 @@ import { UserContext } from "./UserContext";
 import { useState,useEffect } from "react";
 
 export const UserProvider=({children})=>{
-const [myUserInfo,setMyUserInfo]=useState("");
+const [myUserInfo,setMyUserInfo]=useState(JSON.parse( localStorage.getItem('userInfo')));
+
 useEffect(()=>{
 localStorage.setItem('userInfo',JSON.stringify(myUserInfo));
-
-
-setCurrLogin(u);
 },[myUserInfo])
-const currLogin=localStorage.getItem('userInfo');
-
 return(
 
-    <UserContext.Provider value={{myUserInfo,setMyUserInfo,currLogin}}>{children}</UserContext.Provider>
+    <UserContext.Provider value={{myUserInfo,setMyUserInfo}}>{children}</UserContext.Provider>
 )
 
 
