@@ -25,7 +25,7 @@ const MenuPage = () => {
     return savedCart ? JSON.parse(savedCart) : [];
   });
 
-  // 🚨 อ่าน URL ว่าสั่งเปิดตะกร้ามาไหม (?cart=open)
+  // อ่าน URL ว่าสั่งเปิดตะกร้ามาไหม (?cart=open)
   const [isCartOpen, setIsCartOpen] = useState(
     searchParams.get("cart") === "open",
   );
@@ -41,7 +41,7 @@ const MenuPage = () => {
   const [isBranchModalOpen, setIsBranchModalOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
 
-  // 🚨 เช็ค URL เมื่อมีการเปลี่ยนแปลง
+  // เช็ค URL เมื่อมีการเปลี่ยนแปลง
   useEffect(() => {
     const currentTab = searchParams.get("tab");
     if (currentTab) setActiveTab(currentTab);
@@ -104,7 +104,7 @@ const MenuPage = () => {
     }
   };
 
-  // 🚨 ฟังก์ชันใส่ตะกร้า (แก้ให้ "แอดเงียบๆ" ไม่เปิด Sidebar อัตโนมัติ)
+  // ฟังก์ชันใส่ตะกร้า (แก้ให้ "แอดเงียบๆ" ไม่เปิด Sidebar อัตโนมัติ)
   const executeAddToCart = (id, name, qty = 1) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.id === id);
@@ -119,7 +119,7 @@ const MenuPage = () => {
     setToastMsg(`Added: ${name}`);
     setTimeout(() => setToastMsg(""), TOAST_DURATION_MS);
 
-    // 🚨 ปิดบรรทัดข้างล่างนี้ เพื่อไม่ให้ Sidebar เด้งรบกวนลูกค้าตอนกดแอด
+    // ปิดบรรทัดข้างล่างนี้ เพื่อไม่ให้ Sidebar เด้งรบกวนลูกค้าตอนกดแอด
     // setIsCartOpen(true);
   };
 
@@ -146,7 +146,7 @@ const MenuPage = () => {
     <div className="min-h-screen bg-[#eeeeee] font-['IBM_Plex_Sans_Thai'] text-[#242424]">
       {/* Branch Selector Modal */}
       {isBranchModalOpen && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div className="fixed inset-0 z-9999 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
           <div className="bg-white p-8 rounded-3xl max-w-md w-full border-4 border-[#242424] shadow-[12px_12px_0_#242424] text-center relative">
             <button
               onClick={() => {
@@ -192,7 +192,7 @@ const MenuPage = () => {
 
       {/* Main Layout */}
       <div className="flex flex-col md:flex-row relative">
-        <aside className="relative w-full h-100 md:w-105 md:shrink-0 md:sticky md:top-[80px] md:h-[calc(100vh-80px)] bg-[#242424] overflow-hidden z-10">
+        <aside className="relative w-full h-100 md:w-105 md:shrink-0 md:sticky md:top-20 md:h-[calc(100vh-80px)] bg-[#242424] overflow-hidden z-10">
           {PROMOTIONS.map((promo, i) => (
             <div
               key={promo.id}
@@ -208,7 +208,7 @@ const MenuPage = () => {
                       "https://placehold.co/600x800/242424/e4002b?text=PROMO";
                   }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/95 via-black/50 to-transparent" />
               </div>
               <div className="relative z-20 p-8 pb-16 text-white">
                 <span className="text-[#e4002b] font-bold text-sm tracking-[3px] shadow-sm">
@@ -327,7 +327,7 @@ const MenuPage = () => {
 
       {/* Toast Noti (บอกว่าแอดสำเร็จแล้ว) */}
       <div
-        className={`fixed bottom-8 right-8 bg-[#242424] text-white px-6 py-4 rounded-lg shadow-2xl border-l-4 border-[#e4002b] flex items-center gap-3 transition-all duration-300 z-[60] ${toastMsg ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0 pointer-events-none"}`}
+        className={`fixed bottom-8 right-8 bg-[#242424] text-white px-6 py-4 rounded-lg shadow-2xl border-l-4 border-[#e4002b] flex items-center gap-3 transition-all duration-300 z-60 ${toastMsg ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0 pointer-events-none"}`}
       >
         <CheckCircle className="text-[#e4002b]" size={20} />
         <span className="font-bold">{toastMsg}</span>
@@ -344,7 +344,7 @@ const MenuPage = () => {
       />
 
       {/* Cart Sidebar (ตะกร้า) ตั้งค่า z-index ให้สูงสุดเพื่อไม่ให้ Navbar บัง */}
-      <div className="relative z-[9999]">
+      <div className="relative z-9999">
         <CartSidebar
           isOpen={isCartOpen}
           onClose={() => setIsCartOpen(false)}

@@ -99,7 +99,7 @@ export default function PromoCarousel({ title, items }) {
               }}
             />
 
-            <div className="relative z-10 p-8 flex flex-col justify-end h-full w-full bg-gradient-to-t from-black/90 via-black/40 to-transparent">
+            <div className="relative z-10 p-8 flex flex-col justify-end h-full w-full bg-linear-to-t from-black/90 via-black/40 to-transparent">
               <h3 className="font-['Bebas_Neue'] text-white text-4xl leading-none drop-shadow-md">
                 JOIN THE
                 <br />

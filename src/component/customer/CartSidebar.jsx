@@ -28,7 +28,7 @@ export default function CartSidebar({
   // สมมติว่ายังไม่มีค่าส่ง หรือโปรโมชั่น (คำนวณง่ายๆ ไปก่อน)
   const total = subTotal;
 
-  // 🚨 ฟังก์ชันจัดการตอนกดปุ่ม Checkout
+  // ฟังก์ชันจัดการตอนกดปุ่ม Checkout
   const handleCheckoutClick = () => {
     if (!isLoggedIn) {
       // ถ้ายังไม่ login -> ปิดตะกร้า แล้วพาไปหน้า login
@@ -44,12 +44,12 @@ export default function CartSidebar({
     <>
       {/* พื้นหลังเบลอๆ (Backdrop) ดักการคลิกเพื่อปิดตะกร้า */}
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9998] transition-opacity"
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-9998 transition-opacity"
         onClick={onClose}
       />
 
       {/* ตัว Sidebar เลื่อนมาจากด้านขวา */}
-      <div className="fixed top-0 right-0 h-full w-full sm:w-[450px] bg-[#eeeeee] z-[9999] shadow-[-10px_0_30px_rgba(0,0,0,0.5)] transform transition-transform duration-300 ease-in-out translate-x-0 flex flex-col font-['IBM_Plex_Sans_Thai']">
+      <div className="fixed top-0 right-0 h-full w-full sm:w-112.5 bg-[#eeeeee] z-9999 shadow-[-10px_0_30px_rgba(0,0,0,0.5)] transform transition-transform duration-300 ease-in-out translate-x-0 flex flex-col font-['IBM_Plex_Sans_Thai']">
         {/* --- ส่วนหัว (Header) --- */}
         <div className="bg-[#242424] text-white p-6 flex flex-col relative shrink-0">
           <div className="flex justify-between items-center mb-2">

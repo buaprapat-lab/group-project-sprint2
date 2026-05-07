@@ -53,7 +53,7 @@ const Navbarmenu = () => {
   const isLoggedInUser = myUserInfo !== null && myUserInfo !== undefined;
 
   return (
-    <header className="bg-primary text-neutral shadow-lg sticky top-0 z-[100]">
+    <header className="bg-primary text-neutral shadow-lg sticky top-0 z-100">
       <nav className="container mx-auto px-4 py-4 flex justify-between items-center relative">
         {/* Logo Section */}
         <div className="relative w-36 h-12 flex items-center">
