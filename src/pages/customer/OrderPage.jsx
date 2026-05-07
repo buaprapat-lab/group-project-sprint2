@@ -1,7 +1,5 @@
 import React, { useContext } from "react";
 import { OrdersContext } from "../../context/ordersContext/OrdersContext";
-import { CheckCheck } from "lucide-react";
-// 1. Import useNavigate เข้ามา
 import { useNavigate } from "react-router-dom";
 
 const OrderItem = ({ item, orderId, onUpdateQty, onRemove }) => {
@@ -51,7 +49,6 @@ const OrderItem = ({ item, orderId, onUpdateQty, onRemove }) => {
 
 const OrderPage = () => {
   const { orderList, setOrderList } = useContext(OrdersContext);
-  // 2. เรียกใช้งาน useNavigate
   const navigate = useNavigate();
 
   // ฟังก์ชันปรับจำนวน
@@ -63,7 +60,7 @@ const OrderPage = () => {
           ...order,
           [key]: order[key].map((item) =>
             item.id === itemId
-              ? { ...item, quantity: Math.max(1, item.quantity + change) } // ห้ามลดต่ำกว่า 1
+              ? { ...item, quantity: Math.max(1, item.quantity + change) }
               : item,
           ),
         };
@@ -92,7 +89,7 @@ const OrderPage = () => {
     }
   };
 
-  // คำนวณราคาสรุป (สมมติว่ามี field price ใน item)
+  // คำนวณราคาสรุป
   const calculateTotal = () => {
     return orderList?.reduce((total, order) => {
       const items = order.List || order.orderList || [];
@@ -102,6 +99,8 @@ const OrderPage = () => {
       );
     }, 0);
   };
+
+  // ฟังก์ชันสำหรับกดปุ่มชำระเงิน
   const handleCheckout = () => {
     if (!orderList || orderList.length === 0) {
       alert("กรุณาเพิ่มสินค้าลงตะกร้าก่อนชำระเงิน");
@@ -112,7 +111,7 @@ const OrderPage = () => {
     const tax = total * 0.07;
     const netTotal = total + tax;
 
-    // ส่งข้อมูลตะกร้า (orderData) และราคาไปกับ state
+    // ส่งข้อมูลตะกร้าและราคาไปกับ state ไปยัง Path /payment
     navigate("/payment", {
       state: {
         subTotal: total,
@@ -181,6 +180,7 @@ const OrderPage = () => {
                 </div>
               </div>
 
+              {/* ปุ่มชำระเงินที่ผูกฟังก์ชัน handleCheckout ไว้แล้ว */}
               <button
                 onClick={handleCheckout}
                 className="w-full bg-gray-900 hover:bg-black text-white py-4 rounded-2xl font-bold text-lg transition-all active:scale-95 shadow-xl"

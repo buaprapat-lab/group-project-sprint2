@@ -1,8 +1,7 @@
 import React, { useState, useContext } from "react";
 import { OrdersContext } from "../../context/ordersContext/OrdersContext";
 
-// รับ Props 'cartItems' เข้ามา
-export default function CheckoutSteps({ cartItems, updateQty }) {
+export default function CheckoutSteps() {
   const { orderList, setOrderList } = useContext(OrdersContext);
   const [selectedAddress, setSelectedAddress] = useState("home");
   const [selectedTime, setSelectedTime] = useState("fastest");
@@ -16,7 +15,8 @@ export default function CheckoutSteps({ cartItems, updateQty }) {
     { id: "1430", label: "14:30 - 15:00" },
     { id: "1500", label: "15:00 - 15:30" },
   ];
-  // 3. ฟังก์ชันสำหรับอัปเดตจำนวน (ก๊อปมาจาก OrderPage)
+
+  // ฟังก์ชันสำหรับอัปเดตจำนวน (ซิงค์อัตโนมัติกับ OrderSummary ผ่าน Context)
   const handleUpdateQty = (orderId, itemId, change) => {
     const updated = orderList.map((order) => {
       if (order.orderId === orderId) {
@@ -25,14 +25,13 @@ export default function CheckoutSteps({ cartItems, updateQty }) {
           ...order,
           [key]: order[key].map((item) =>
             item.id === itemId
-              ? { ...item, quantity: Math.max(1, item.quantity + change) } // ห้ามลดต่ำกว่า 1
+              ? { ...item, quantity: Math.max(1, item.quantity + change) } 
               : item,
           ),
         };
       }
       return order;
     });
-    // พอ set ปุ๊บ ราคาหน้า OrderSummary (PaymentPage) จะเปลี่ยนตามทันที
     setOrderList(updated);
   };
 
@@ -48,7 +47,6 @@ export default function CheckoutSteps({ cartItems, updateQty }) {
         </h2>
 
         <div className="space-y-4">
-          {/* 4. แสดงข้อมูลจาก Context อย่างปลอดภัย */}
           {!orderList || !Array.isArray(orderList) || orderList.length === 0 ? (
             <div className="text-center py-10 text-gray-400">
               ไม่มีสินค้าที่รอชำระเงิน
@@ -79,7 +77,7 @@ export default function CheckoutSteps({ cartItems, updateQty }) {
                             {item.desc || ""}
                           </p>
 
-                          {/* 5. ปุ่มเพิ่ม-ลดจำนวน */}
+                          {/* ปุ่มเพิ่ม-ลดจำนวน */}
                           <div className="flex items-center space-x-3 mt-2">
                             <button
                               onClick={() =>
@@ -130,7 +128,7 @@ export default function CheckoutSteps({ cartItems, updateQty }) {
       </div>
 
       {/* Step 2: ที่อยู่จัดส่ง */}
-      <div className="bg-[#262626] rounded-xl p-6">
+      <div className="bg-[#262626] rounded-xl p-6 border border-gray-700 text-white">
         <h2 className="text-xl font-bold mb-4 flex items-center">
           <span className="bg-[#DC5F00] text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-3">
             2
@@ -197,7 +195,7 @@ export default function CheckoutSteps({ cartItems, updateQty }) {
       </div>
 
       {/* Step 3: เวลาจัดส่ง */}
-      <div className="bg-[#262626] rounded-xl p-6">
+      <div className="bg-[#262626] rounded-xl p-6 border border-gray-700 text-white">
         <h2 className="text-xl font-bold mb-4 flex items-center">
           <span className="bg-[#DC5F00] text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-3">
             3
@@ -222,7 +220,7 @@ export default function CheckoutSteps({ cartItems, updateQty }) {
       </div>
 
       {/* Step 4: วิธีชำระเงิน */}
-      <div className="bg-[#262626] rounded-xl p-6">
+      <div className="bg-[#262626] rounded-xl p-6 border border-gray-700 text-white">
         <h2 className="text-xl font-bold mb-4 flex items-center">
           <span className="bg-[#DC5F00] text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-3">
             4
@@ -234,7 +232,8 @@ export default function CheckoutSteps({ cartItems, updateQty }) {
             (method, idx) => (
               <button
                 key={idx}
-                className={`px-4 py-2 whitespace-nowrap text-sm ${idx === 0 ? "text-[#DC5F00] border-b-2 border-[#DC5F00] font-bold" : "text-gray-400"}`}
+                onClick={() => setPaymentMethod(method)}
+                className={`px-4 py-2 whitespace-nowrap text-sm ${paymentMethod === method ? "text-[#DC5F00] border-b-2 border-[#DC5F00] font-bold" : "text-gray-400 hover:text-white"}`}
               >
                 {method}
               </button>
@@ -242,75 +241,79 @@ export default function CheckoutSteps({ cartItems, updateQty }) {
           )}
         </div>
 
-        {/* Credit Card Mockup Form */}
-        <div className="bg-[#E9662A] rounded-xl p-6 text-white w-full max-w-sm mb-6 shadow-lg">
-          <div className="flex justify-between items-center mb-6">
-            <div className="w-12 h-8 bg-white/30 rounded"></div>
-            <div className="font-bold italic">VISA</div>
-          </div>
-          <div className="text-2xl tracking-widest mb-6">
-            **** **** **** ****
-          </div>
-          <div className="flex justify-between text-xs">
-            <div>
-              <p className="opacity-70">ชื่อบนบัตร</p>
-              <p className="font-bold text-sm">YOUR NAME</p>
+        {/* Credit Card Mockup Form (แสดงเฉพาะเมื่อเลือกบัตรเครดิต) */}
+        {paymentMethod === "บัตรเครดิต" && (
+          <>
+            <div className="bg-[#E9662A] rounded-xl p-6 text-white w-full max-w-sm mb-6 shadow-lg">
+              <div className="flex justify-between items-center mb-6">
+                <div className="w-12 h-8 bg-white/30 rounded"></div>
+                <div className="font-bold italic">VISA</div>
+              </div>
+              <div className="text-2xl tracking-widest mb-6">
+                **** **** **** ****
+              </div>
+              <div className="flex justify-between text-xs">
+                <div>
+                  <p className="opacity-70">ชื่อบนบัตร</p>
+                  <p className="font-bold text-sm">YOUR NAME</p>
+                </div>
+                <div>
+                  <p className="opacity-70">หมดอายุ</p>
+                  <p className="font-bold text-sm">MM/YY</p>
+                </div>
+              </div>
             </div>
-            <div>
-              <p className="opacity-70">หมดอายุ</p>
-              <p className="font-bold text-sm">MM/YY</p>
-            </div>
-          </div>
-        </div>
 
-        <div className="space-y-4 max-w-md">
-          <div>
-            <label className="block text-sm text-gray-400 mb-1">
-              หมายเลขบัตร
-            </label>
-            <input
-              type="text"
-              placeholder="0000 0000 0000 0000"
-              className="w-full bg-[#1a1a1a] border border-gray-600 rounded-lg p-3 text-white focus:outline-none focus:border-[#DC5F00]"
-            />
-          </div>
-          <div>
-            <label className="block text-sm text-gray-400 mb-1">
-              ชื่อผู้ถือบัตร
-            </label>
-            <input
-              type="text"
-              placeholder="ชื่อ นามสกุล (ภาษาอังกฤษ)"
-              className="w-full bg-[#1a1a1a] border border-gray-600 rounded-lg p-3 text-white focus:outline-none focus:border-[#DC5F00]"
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-gray-400 mb-1">
-                วันหมดอายุ
+            <div className="space-y-4 max-w-md">
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">
+                  หมายเลขบัตร
+                </label>
+                <input
+                  type="text"
+                  placeholder="0000 0000 0000 0000"
+                  className="w-full bg-[#1a1a1a] border border-gray-600 rounded-lg p-3 text-white focus:outline-none focus:border-[#DC5F00]"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-400 mb-1">
+                  ชื่อผู้ถือบัตร
+                </label>
+                <input
+                  type="text"
+                  placeholder="ชื่อ นามสกุล (ภาษาอังกฤษ)"
+                  className="w-full bg-[#1a1a1a] border border-gray-600 rounded-lg p-3 text-white focus:outline-none focus:border-[#DC5F00]"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">
+                    วันหมดอายุ
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="MM/YY"
+                    className="w-full bg-[#1a1a1a] border border-gray-600 rounded-lg p-3 text-white focus:outline-none focus:border-[#DC5F00]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">CVV</label>
+                  <input
+                    type="password"
+                    placeholder="***"
+                    className="w-full bg-[#1a1a1a] border border-gray-600 rounded-lg p-3 text-white focus:outline-none focus:border-[#DC5F00]"
+                  />
+                </div>
+              </div>
+              <label className="flex items-center space-x-2 cursor-pointer mt-4">
+                <input type="checkbox" className="accent-[#DC5F00]" />
+                <span className="text-sm text-gray-300">
+                  บันทึกบัตรสำหรับครั้งถัดไป
+                </span>
               </label>
-              <input
-                type="text"
-                placeholder="MM/YY"
-                className="w-full bg-[#1a1a1a] border border-gray-600 rounded-lg p-3 text-white focus:outline-none focus:border-[#DC5F00]"
-              />
             </div>
-            <div>
-              <label className="block text-sm text-gray-400 mb-1">CVV</label>
-              <input
-                type="password"
-                placeholder="***"
-                className="w-full bg-[#1a1a1a] border border-gray-600 rounded-lg p-3 text-white focus:outline-none focus:border-[#DC5F00]"
-              />
-            </div>
-          </div>
-          <label className="flex items-center space-x-2 cursor-pointer mt-4">
-            <input type="checkbox" className="accent-[#DC5F00]" />
-            <span className="text-sm text-gray-300">
-              บันทึกบัตรสำหรับครั้งถัดไป
-            </span>
-          </label>
-        </div>
+          </>
+        )}
       </div>
     </div>
   );
