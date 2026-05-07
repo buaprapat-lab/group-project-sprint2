@@ -201,89 +201,94 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
 import React, { useContext, useState, useEffect } from "react";
 import { OrdersContext } from "../../context/ordersContext/OrdersContext";
 import { useNavigate, useLocation } from "react-router-dom";
-// เพิ่มไอคอน Edit2 และ X เข้ามา
-import { Trash2, PlusCircle, MessageSquare, CheckCircle2, Edit2, X } from "lucide-react";
-import  { menuData } from "../../assets/menuData"
+import { Trash2, PlusCircle, MessageSquare, CheckCircle2, Edit2, X, ChevronLeft, ShoppingCart } from "lucide-react";
+import { MENU } from "../../assets/menuData";
 
-const mockupData = menuData;
-// --- ส่วนของรายการอาหารในตะกร้า (คอลัมน์กลาง) ---
-const OrderItem = ({ item, orderId, onUpdateQty, onRemove, onEdit }) => {
+// --- ส่วนแสดงรายการสินค้าในตะกร้า (Middle Panel จาก cart.html) ---
+const OrderItem = ({ item, orderId, onUpdateQty, onRemove, onEdit, isSelected }) => {
   return (
-    <div className="flex items-center gap-4 border-b border-gray-100 py-6 last:border-0">
-      <div className="w-16 h-16 rounded-2xl overflow-hidden bg-gray-100 flex-shrink-0">
-        <img src={item.image || "/api/placeholder/80/80"} alt={item.name} className="w-full h-full object-cover" />
+    <div 
+      className={`flex items-center gap-4 p-4 rounded-2xl transition-all duration-200 cursor-pointer mb-2
+        ${isSelected ? 'bg-[#fff5f510] border-2 border-orange-500' : 'bg-[#1a1a1a] border-2 border-transparent hover:bg-[#222]'}`}
+      onClick={() => onEdit(item)}
+    >
+      {/* Thumbnail Placeholder แบบใน cart.html */}
+      <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#333] flex-shrink-0 flex items-center justify-center text-2xl">
+        {item.emoji || "🍗"}
       </div>
+      
       <div className="flex-1 min-w-0">
-        <h3 className="font-bold text-gray-800 truncate">{item.name}</h3>
-        <p className="text-sm text-orange-600 font-bold mt-1">
+        <h3 className="font-bold text-gray-100 text-sm truncate">{item.name}</h3>
+        <p className="text-sm text-orange-500 font-bold">
           {item.price ? `${(item.price * item.quantity).toLocaleString()} บาท` : "รอระบุราคา"}
         </p>
-        
-        <div className="flex items-center gap-4 mt-2">
-          {/* ปุ่ม Note */}
-          <button className="flex items-center gap-1 text-[10px] text-gray-400 hover:text-gray-600 transition-colors">
-            <MessageSquare size={12} /> ระบุคำขอพิเศษ
-          </button>
-          
-          {/* สาเหตุที่ 2: ปุ่มกดแก้ไขจากสินค้าตรงกลาง */}
-          <button 
-            onClick={() => onEdit(item)}
-            className="flex items-center gap-1 text-[10px] text-orange-500 hover:text-orange-600 font-bold transition-colors"
-          >
-            <Edit2 size={12} /> ปรับแต่งคอร์ส
-          </button>
+        <div className="flex items-center gap-2 mt-1 text-[10px] text-gray-500 uppercase font-medium">
+          <MessageSquare size={10} /> {item.note || 'No Note'} | {item.size || 'Regular'}
         </div>
       </div>
       
-      <div className="flex flex-col items-end gap-3">
-        <div className="flex items-center bg-gray-100 rounded-xl p-1 border border-gray-200">
-          <button onClick={() => onUpdateQty(orderId, item.id, -1)} className="w-7 h-7 flex items-center justify-center hover:bg-white rounded-lg transition-all text-gray-600" disabled={item.quantity <= 1}> - </button>
-          <span className="w-8 text-center font-bold text-gray-700 text-sm">{item.quantity}</span>
-          <button onClick={() => onUpdateQty(orderId, item.id, 1)} className="w-7 h-7 flex items-center justify-center hover:bg-white rounded-lg transition-all text-gray-600"> + </button>
-        </div>
-        <button onClick={() => onRemove(orderId, item.id)} className="text-gray-300 hover:text-red-500 transition-colors">
-          <Trash2 size={18} />
-        </button>
+      {/* Qty Control สไตล์ cart.html */}
+      <div className="flex items-center bg-[#262626] rounded-lg border border-gray-700 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+        <button 
+          onClick={() => onUpdateQty(orderId, item.id, -1)} 
+          className="w-8 h-8 flex items-center justify-center hover:bg-[#333] text-gray-400"
+          disabled={item.quantity <= 1}
+        > - </button>
+        <span className="w-8 text-center font-bold text-gray-200 text-xs">{item.quantity}</span>
+        <button 
+          onClick={() => onUpdateQty(orderId, item.id, 1)} 
+          className="w-8 h-8 flex items-center justify-center hover:bg-[#333] text-gray-200"
+        > + </button>
       </div>
+
+      <button 
+        onClick={(e) => { e.stopPropagation(); onRemove(orderId, item.id); }} 
+        className="p-2 text-gray-600 hover:text-red-500 transition-colors"
+      >
+        <Trash2 size={16} />
+      </button>
     </div>
   );
 };
 
-// --- หน้าเพจหลัก ---
 const OrderPage = () => {
   const { orderList, setOrderList } = useContext(OrdersContext);
   const navigate = useNavigate();
   const location = useLocation();
   
-  // State จัดการหน้าต่าง Customize
-  // สาเหตุที่ 1: ดึง state จากการ Navigate มาจากหน้า Menu (ถ้ามี)
-  const [customizingItem, setCustomizingItem] = useState(location.state?.customizingItem || null);
+  // State สำหรับการเลือกไอเทมมาปรับแต่ง (Left Panel)
+  const [customizingItem, setCustomizingItem] = useState(null);
+  const [selectedOptions, setSelectedOptions] = useState({ spicy: "เผ็ดกลาง", size: "Regular", note: "None" });
 
-  const [activeTab, setActiveTab] = useState("1st course");
-  const [selectedCourses, setSelectedCourses] = useState({});
-  const tabs = ["1st course", "2nd course", "Dessert select"];
-  
-  const currentOptions = menuData.filter(item => item.category === activeTab) || menuData;
-
-  // ดักจับกรณีผู้ใช้เปลี่ยนหน้าไปมาแล้วมี State ส่งมาใหม่
   useEffect(() => {
     if (location.state?.customizingItem) {
       setCustomizingItem(location.state.customizingItem);
     }
   }, [location.state]);
 
-  const handleSelectCourse = (course) => {
-    setSelectedCourses(prev => ({ ...prev, [activeTab]: course }));
-  };
-
   const handleUpdateQty = (orderId, itemId, change) => {
     const updated = orderList.map(order => {
+      const key = order.List ? "List" : "orderList";
       if (order.orderId === orderId) {
-        const key = order.List ? "List" : "orderList";
-        return { ...order, [key]: order[key].map(item => item.id === itemId ? { ...item, quantity: Math.max(1, item.quantity + change) } : item) };
+        return { 
+          ...order, 
+          [key]: order[key].map(item => 
+            item.id === itemId ? { ...item, quantity: Math.max(1, item.quantity + change) } : item
+          ) 
+        };
       }
       return order;
     });
@@ -291,15 +296,16 @@ const OrderPage = () => {
   };
 
   const handleRemove = (orderId, itemId) => {
-    if (window.confirm("ต้องการลบรายการนี้ใช่หรือไม่?")) {
+    if (window.confirm("ลบรายการนี้ออกจากตะกร้า?")) {
       const updated = orderList.map(order => {
+        const key = order.List ? "List" : "orderList";
         if (order.orderId === orderId) {
-          const key = order.List ? "List" : "orderList";
           return { ...order, [key]: order[key].filter(item => item.id !== itemId) };
         }
         return order;
       }).filter(order => (order.List || order.orderList).length > 0);
       setOrderList(updated);
+      if (customizingItem?.id === itemId) setCustomizingItem(null);
     }
   };
 
@@ -310,166 +316,161 @@ const OrderPage = () => {
     }, 0) || 0;
   };
 
-  const handleCheckout = () => {
-    if (!orderList || orderList.length === 0) {
-      alert("กรุณาเพิ่มสินค้าลงตะกร้าก่อนชำระเงิน");
-      return;
-    }
-    navigate("/payment", {
-      state: {
-        subTotal: calculateTotal(),
-        tax: calculateTotal() * 0.07,
-        netTotal: calculateTotal() * 1.07,
-        orderData: orderList,
-        customSelections: selectedCourses 
-      },
-    });
-  };
+  const subTotal = calculateTotal();
+  const tax = subTotal * 0.07;
+  const netTotal = subTotal + tax;
 
   return (
-    <div className="py-10 bg-gray-50 min-h-screen">
-      <main className="container mx-auto px-4 max-w-[1400px]">
-        <h1 className="text-3xl font-black text-gray-800 mb-8 flex items-center gap-3">
-          <span className="bg-orange-500 w-2 h-8 rounded-full"></span> My Cart
-        </h1>
+    <div className="py-10 bg-[#111] min-h-screen text-white font-['Kanit']">
+      <main className="container mx-auto px-4 max-w-7xl">
+        
+        {/* Page Title */}
+        <div className="flex items-center gap-4 mb-10">
+          <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
+          <h1 className="text-3xl font-bold tracking-tight">MY CART</h1>
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 transition-all duration-300">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
-          {/* ====== Column 1: Customize ur course (แสดงเมื่อมีการเลือก Item เท่านั้น) ====== */}
-          {customizingItem && (
-            <div className="lg:col-span-4 transition-all animate-in slide-in-from-left-4 fade-in">
-              <div className="bg-white rounded-[2rem] shadow-sm p-6 border border-gray-100 sticky top-10">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                      <CheckCircle2 className="text-black" size={24} />
-                      Customize
-                    </h2>
-                    <p className="text-sm text-gray-400 mt-1">สำหรับเมนู: <span className="text-orange-500 font-bold">{customizingItem.name}</span></p>
-                  </div>
-                  {/* ปุ่มปิดหน้าต่าง Customize */}
-                  <button onClick={() => setCustomizingItem(null)} className="p-2 bg-gray-100 rounded-full text-gray-400 hover:text-gray-800 hover:bg-gray-200 transition-colors">
-                    <X size={16} />
-                  </button>
-                </div>
-                
-                <div className="flex gap-2 overflow-x-auto pb-3 mb-4 [&::-webkit-scrollbar]:hidden">
-                  {tabs.map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setActiveTab(tab)}
-                      className={`whitespace-nowrap px-5 py-2 rounded-full text-sm font-bold transition-all ${
-                        activeTab === tab ? 'bg-black text-white shadow-md' : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-50'
-                      }`}
-                    >
-                      {tab}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full">
-                  {currentOptions.map((option) => {
-                    const isSelected = selectedCourses[activeTab]?.id === option.id;
-                    return (
-                      <div 
-                        key={option.id}
-                        onClick={() => handleSelectCourse(option)}
-                        className={`flex gap-4 p-3 rounded-2xl border-2 cursor-pointer transition-all ${
-                          isSelected ? 'border-orange-500 bg-orange-50' : 'border-gray-100 hover:border-gray-200'
-                        }`}
-                      >
-                        <div className="w-20 h-20 bg-gray-200 rounded-xl overflow-hidden flex-shrink-0">
-                          <img src={option.image} alt={option.name} className="w-full h-full object-cover" />
-                        </div>
-                        <div className="flex-1 flex flex-col justify-center">
-                          <h4 className="font-bold text-gray-800 text-base leading-tight">{option.name}</h4>
-                          <p className="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">{option.desc}</p>
-                          <div className="flex items-center justify-between mt-2">
-                            <span className="text-sm font-bold text-gray-900">+{option.price} บาท</span>
-                            <button className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors ${
-                              isSelected ? 'bg-orange-500 text-white' : 'bg-gray-100 text-gray-800 hover:bg-gray-200'
-                            }`}>
-                              {isSelected ? 'Selected' : '+ Add'}
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* ปุ่มบันทึกการตั้งค่าแล้วปิด */}
-                <button 
-                  onClick={() => setCustomizingItem(null)}
-                  className="w-full mt-6 py-3 bg-black text-white font-bold rounded-xl hover:bg-gray-800 transition-colors"
-                >
-                  บันทึกตัวเลือก
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* ====== Column 2: Order Items (กลาง) ====== */}
-          {/* ปรับสัดส่วนคอลัมน์อัตโนมัติตามการเปิดปิด Customize */}
-          <div className={`${customizingItem ? 'lg:col-span-5' : 'lg:col-span-8'} space-y-4 transition-all duration-300`}>
-            <div className="bg-white rounded-[2rem] shadow-sm p-6 border border-gray-100 min-h-[400px]">
-              <h2 className="text-xl font-bold text-gray-800 mb-4 px-2">Order Summary</h2>
-              
-              {!orderList || orderList.length === 0 ? (
-                <div className="text-center py-20">
-                  <p className="text-gray-400 mb-4">ตะกร้าสินค้าว่างเปล่า</p>
-                  <button onClick={() => navigate("/menu")} className="text-orange-500 font-bold underline">ไปหน้าเมนู</button>
-                </div>
-              ) : (
+          {/* ── LEFT PANEL: Product Preview & Customize (ยึดจาก cart.html) ── */}
+          <div className="lg:col-span-3 bg-[#1a1a1a] rounded-3xl overflow-hidden shadow-2xl border border-gray-800">
+            <div className="h-56 bg-[#222] flex flex-col items-center justify-center relative">
+              {customizingItem ? (
                 <>
-                  <div className="divide-y divide-gray-50">
-                    {orderList.map((order) => (
-                      <div key={order.orderId}>
-                        {(order.List || order.orderList || []).map((item) => (
-                          <OrderItem 
-                            key={item.id} 
-                            item={item} 
-                            orderId={order.orderId} 
-                            onUpdateQty={handleUpdateQty} 
-                            onRemove={handleRemove}
-                            onEdit={setCustomizingItem} // ส่งฟังก์ชันให้ปุ่มตรงกลางเรียกใช้
-                          />
-                        ))}
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <div className="mt-8">
-                    <button onClick={() => navigate("/menu")} className="flex items-center justify-center gap-2 w-full py-4 bg-orange-50 text-orange-600 rounded-2xl font-bold hover:bg-orange-100 transition-all border border-orange-100 shadow-sm">
-                      <PlusCircle size={20} /> เพิ่มรายการอาหารอื่น
-                    </button>
-                  </div>
+                  <span className="absolute top-4 right-4 bg-red-600 text-[10px] px-3 py-1 rounded-full font-bold animate-pulse">กำลังแก้ไข</span>
+                  <div className="text-7xl mb-2">{customizingItem.emoji || "🍗"}</div>
+                  <div className="text-sm font-bold text-gray-300">{customizingItem.name}</div>
                 </>
+              ) : (
+                <div className="text-center text-gray-500 p-6">
+                  <ShoppingCart size={40} className="mx-auto mb-4 opacity-20" />
+                  <p className="text-xs">เลือกรายการจากตะกร้า<br/>เพื่อปรับแต่งรสชาติ</p>
+                </div>
               )}
             </div>
+
+            {customizingItem ? (
+              <div className="p-6 space-y-5">
+                <div className="flex gap-1.5 mb-2">
+                  <div className="w-2 h-2 rounded-full bg-red-600"></div>
+                  <div className="w-2 h-2 rounded-full bg-gray-700"></div>
+                  <div className="w-2 h-2 rounded-full bg-gray-700"></div>
+                </div>
+                <h3 className="text-lg font-bold">Customize Menu</h3>
+                
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">ความเผ็ด</label>
+                    <select className="w-full bg-[#111] border border-gray-700 rounded-xl p-2.5 text-sm mt-1 focus:border-red-600 outline-none">
+                      <option>ไม่เผ็ด</option><option>เผ็ดน้อย</option><option selected>เผ็ดกลาง</option><option>เผ็ดมาก</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">ขนาด</label>
+                    <select className="w-full bg-[#111] border border-gray-700 rounded-xl p-2.5 text-sm mt-1 focus:border-red-600 outline-none">
+                      <option>Regular</option><option>Large</option><option>Family Bucket</option>
+                    </select>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setCustomizingItem(null)}
+                  className="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-bold transition-all mt-4"
+                >
+                  บันทึกการปรับแต่ง
+                </button>
+              </div>
+            ) : (
+              <div className="p-10 text-center text-gray-600 text-xs italic">
+                คลิกที่รายการในตะกร้าเพื่อแก้ไข
+              </div>
+            )}
           </div>
 
-          {/* ====== Column 3: Payment Summary (ขวา) ====== */}
-          <div className={`${customizingItem ? 'lg:col-span-3' : 'lg:col-span-4'} transition-all duration-300`}>
-            <div className="bg-white rounded-[2rem] shadow-xl p-8 border border-gray-100 sticky top-10">
-              <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">สรุปยอดเงิน</h2>
-              <div className="space-y-4 mb-8">
-                <div className="flex justify-between text-gray-500 text-sm">
-                  <span>ราคารวม</span>
-                  <span className="font-bold text-gray-800">{calculateTotal().toLocaleString()} บาท</span>
+          {/* ── MIDDLE PANEL: Order List (ยึดจาก OrderPage.jsx) ── */}
+          <div className="lg:col-span-5 bg-[#1a1a1a] rounded-3xl p-6 border border-gray-800 shadow-xl">
+            <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
+              Order Summary <span className="bg-gray-800 text-gray-400 text-xs px-2 py-0.5 rounded-md">{orderList.length} รายการ</span>
+            </h2>
+            
+            <div className="space-y-1 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+              {orderList.length === 0 ? (
+                <div className="text-center py-20 text-gray-600 italic">ตะกร้าของคุณยังว่างอยู่</div>
+              ) : (
+                orderList.map((order) => (
+                  <div key={order.orderId}>
+                    {(order.List || order.orderList || []).map((item) => (
+                      <OrderItem 
+                        key={item.id} 
+                        item={item} 
+                        orderId={order.orderId} 
+                        onUpdateQty={handleUpdateQty} 
+                        onRemove={handleRemove} 
+                        onEdit={setCustomizingItem}
+                        isSelected={customizingItem?.id === item.id}
+                      />
+                    ))}
+                  </div>
+                ))
+              )}
+            </div>
+
+            <button 
+              onClick={() => navigate("/menu")}
+              className="mt-6 w-full py-4 border-2 border-dashed border-orange-500/30 text-orange-500 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-orange-500/5 transition-all"
+            >
+              <PlusCircle size={20} /> เพิ่มรายการอาหารอื่น
+            </button>
+          </div>
+
+          {/* ── RIGHT PANEL: Totals (ผสมดีไซน์ cart.html + logic OrderPage) ── */}
+          <div className="lg:col-span-4 space-y-6">
+            <div className="bg-[#1a1a1a] rounded-3xl p-8 border border-gray-800 shadow-2xl">
+              <h2 className="text-center font-bold text-gray-400 uppercase tracking-widest text-sm mb-8">สรุปยอดเงิน</h2>
+              
+              <div className="space-y-4 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-500">ราคารวม</span>
+                  <span className="font-bold">{subTotal.toLocaleString()} บาท</span>
                 </div>
-                <div className="flex justify-between text-gray-500 text-sm">
-                  <span>ภาษี (7%)</span>
-                  <span className="font-bold text-gray-800">{(calculateTotal() * 0.07).toLocaleString()} บาท</span>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">ภาษี (7%)</span>
+                  <span className="font-bold">{tax.toLocaleString()} บาท</span>
                 </div>
-                <div className="border-t border-gray-100 pt-4 mt-4 flex justify-between font-black text-xl text-gray-900">
-                  <span>สุทธิ</span>
-                  <span className="text-orange-600">{(calculateTotal() * 1.07).toLocaleString()}</span>
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-gray-500">ค่าจัดส่ง</span>
+                  <span className="text-green-500 font-bold bg-green-500/10 px-2 py-0.5 rounded">FREE</span>
+                </div>
+                
+                <div className="pt-6 mt-6 border-t-2 border-gray-800 flex justify-between items-end">
+                  <span className="font-bold text-xl">สุทธิ</span>
+                  <div className="text-right">
+                    <span className="block text-[10px] text-gray-500 uppercase">Total Amount</span>
+                    <span className="text-3xl font-black text-red-600 leading-none">
+                      {netTotal.toLocaleString()}
+                    </span>
+                  </div>
                 </div>
               </div>
-              <button onClick={handleCheckout} className="w-full bg-gray-900 hover:bg-black text-white py-4 rounded-2xl font-bold text-lg transition-all active:scale-95 shadow-lg">
-                ชำระเงินตอนท้าย
+
+              <div className="mt-8 flex gap-2">
+                <input 
+                  type="text" 
+                  placeholder="โค้ดส่วนลด" 
+                  className="flex-1 bg-[#111] border border-gray-700 rounded-xl px-4 py-2 text-sm focus:border-orange-500 outline-none"
+                />
+                <button className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-xl text-xs font-bold transition-colors">ใช้งาน</button>
+              </div>
+
+              <button 
+                onClick={() => navigate("/payment", { state: { subTotal, tax, netTotal, orderData: orderList } })}
+                className="w-full mt-6 py-5 bg-white text-black hover:bg-orange-500 hover:text-white rounded-2xl font-black text-lg transition-all shadow-xl active:scale-95 uppercase tracking-tighter"
+              >
+                ชำระเงินตอนนี้
               </button>
+              
+              <p className="text-[9px] text-center text-gray-600 mt-6 tracking-widest uppercase">
+                Serious Fried Chicken - 100% Quality Guaranteed
+              </p>
             </div>
           </div>
 
