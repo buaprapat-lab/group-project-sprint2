@@ -85,7 +85,28 @@ export default function SummaryInform({ orderState, setOrderState, profile, setP
         <h3 className="text-xl font-black uppercase tracking-widest mb-6 text-brand-black text-center border-b-2 border-brand-gray pb-2">Booking Information</h3>
         
         <div className="text-left text-base font-black uppercase space-y-4 text-brand-black">
-          
+            {orderState.userAddress && (
+    <p className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 border-b border-brand-gray pb-2 bg-brand-gray/30 p-2 rounded">
+      <span className="text-xs text-brand-orange">Current Location</span> 
+      <span className="font-bold text-sm text-brand-black truncate max-w-50">
+        {orderState.userAddress}
+      </span>
+    </p>
+  )}
+
+  <p className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 border-b border-brand-gray pb-2">
+    <span className="text-xs text-gray-500">Order Type</span> 
+    <span className="font-bold text-brand-orange text-lg">{orderState.type}</span>
+  </p>
+
+            
+
+
+
+
+
+
+
           <p className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 border-b border-brand-gray pb-2">
             <span className="text-xs text-gray-500">Order Type</span> 
             {isEditing ? (

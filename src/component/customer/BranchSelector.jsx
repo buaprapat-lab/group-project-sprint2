@@ -41,7 +41,7 @@ export default function BranchSelector({ onSelectBranch, onUpdateAddress }) {
         <input 
           type="text" 
           placeholder="ค้นหาสถานที่..." 
-          className="flex-1 border-2 border-brand-gray p-2 rounded focus:outline-none focus:border-brand-orange bg-white shadow-sm min-w-[200px]"
+          className="flex-1 border-2 border-brand-gray p-2 rounded focus:outline-none focus:border-brand-orange bg-white shadow-sm min-w-50"
         />
         <button 
           onClick={findMyLocation}
