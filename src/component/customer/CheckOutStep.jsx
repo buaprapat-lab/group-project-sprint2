@@ -163,6 +163,9 @@ export default function CheckoutSteps() {
             3
           </span>
           เวลาจัดส่ง
+          <div>
+            Date 20262026
+          </div>
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {times.map((time) => (
@@ -280,3 +283,9 @@ export default function CheckoutSteps() {
     </div>
   );
 }
+
+
+
+
+
+

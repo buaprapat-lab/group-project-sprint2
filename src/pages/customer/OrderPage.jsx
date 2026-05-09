@@ -1,51 +1,52 @@
 import React, { useContext, useState, useEffect } from "react";
 import { OrdersContext } from "../../context/ordersContext/OrdersContext";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Trash2, PlusCircle, MessageSquare, CheckCircle2, Edit2, X, ChevronLeft, ShoppingCart } from "lucide-react";
-import { MENU } from "../../assets/menuData";
+import { Trash2, PlusCircle, MessageSquare, ShoppingCart } from "lucide-react";
 
-// --- ส่วนแสดงรายการสินค้าในตะกร้า (Middle Panel จาก cart.html) ---
+// --- ส่วนแสดงรายการสินค้าในตะกร้า (Middle Panel) ---
 const OrderItem = ({ item, orderId, onUpdateQty, onRemove, onEdit, isSelected }) => {
   return (
-    <div 
-      className={`flex items-center gap-4 p-4 rounded-2xl transition-all duration-200 cursor-pointer mb-2
-        ${isSelected ? 'bg-[#fff5f510] border-2 border-orange-500' : 'bg-[#1a1a1a] border-2 border-transparent hover:bg-[#222]'}`}
+    <div
+      className={`flex items-center gap-4 p-4 rounded-[32px] transition-all duration-300 ease-in-out cursor-pointer mb-3
+        ${isSelected 
+          ? 'bg-[#FDE68A] border-2 border-[#242424] shadow-[4px_4px_0_#242424]' // เน้นด้วย Sprinkle Yellow
+          : 'bg-[#ffffff] border-2 border-[#e5e7eb] hover:border-[#242424] hover:shadow-[4px_4px_0_#242424]'}`}
       onClick={() => onEdit(item)}
     >
-      {/* Thumbnail Placeholder แบบใน cart.html */}
-      <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#333] flex-shrink-0 flex items-center justify-center text-2xl">
-        {item.emoji || "🍗"}
+      {/* Thumbnail Placeholder */}
+      <div className="w-16 h-16 rounded-[24px] overflow-hidden bg-[#eeeeee] border-2 border-[#242424] flex-shrink-0 flex items-center justify-center text-3xl shadow-[2px_2px_0_#242424]">
+        <div className="animate-[bounce_3s_infinite]">{item.emoji || "🍗"}</div>
       </div>
       
       <div className="flex-1 min-w-0">
-        <h3 className="font-bold text-gray-100 text-sm truncate">{item.name}</h3>
-        <p className="text-sm text-orange-500 font-bold">
-          {item.price ? `${(item.price * item.quantity).toLocaleString()} บาท` : "รอระบุราคา"}
+        <h3 className="font-bold text-[#242424] text-base truncate font-['IBM_Plex_Sans_Thai']">{item.name}</h3>
+        <p className="text-base text-[#e4002b] font-['Bebas_Neue'] tracking-widest">
+          {item.price ? `${(item.price * item.quantity).toLocaleString()} THB` : "TBA"}
         </p>
-        <div className="flex items-center gap-2 mt-1 text-[10px] text-gray-500 uppercase font-medium">
-          <MessageSquare size={10} /> {item.note || 'No Note'} | {item.size || 'Regular'}
+        <div className="flex items-center gap-2 mt-1 text-[11px] text-[#DC5F00] uppercase font-bold tracking-wide">
+          <MessageSquare size={12} /> {item.note || 'No Note'} | {item.size || 'Regular'}
         </div>
       </div>
       
-      {/* Qty Control สไตล์ cart.html */}
-      <div className="flex items-center bg-[#262626] rounded-lg border border-gray-700 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+      {/* Qty Control สไตล์ Brutalist */}
+      <div className="flex items-center bg-[#ffffff] rounded-xl border-2 border-[#242424] overflow-hidden shadow-[2px_2px_0_#242424]" onClick={(e) => e.stopPropagation()}>
         <button 
           onClick={() => onUpdateQty(orderId, item.id, -1)} 
-          className="w-8 h-8 flex items-center justify-center hover:bg-[#333] text-gray-400"
+          className="w-8 h-8 flex items-center justify-center hover:bg-[#eeeeee] text-[#242424] font-bold border-r-2 border-[#242424]"
           disabled={item.quantity <= 1}
         > - </button>
-        <span className="w-8 text-center font-bold text-gray-200 text-xs">{item.quantity}</span>
+        <span className="w-8 text-center font-bold text-[#242424] text-sm font-['Bebas_Neue']">{item.quantity}</span>
         <button 
           onClick={() => onUpdateQty(orderId, item.id, 1)} 
-          className="w-8 h-8 flex items-center justify-center hover:bg-[#333] text-gray-200"
+          className="w-8 h-8 flex items-center justify-center hover:bg-[#eeeeee] text-[#242424] font-bold border-l-2 border-[#242424]"
         > + </button>
       </div>
 
       <button 
         onClick={(e) => { e.stopPropagation(); onRemove(orderId, item.id); }} 
-        className="p-2 text-gray-600 hover:text-red-500 transition-colors"
+        className="p-3 bg-[#ffffff] border-2 border-[#e5e7eb] rounded-xl text-[#242424] hover:bg-[#e4002b] hover:text-white hover:border-[#242424] hover:shadow-[4px_4px_0_#242424] transition-all duration-300"
       >
-        <Trash2 size={16} />
+        <Trash2 size={18} />
       </button>
     </div>
   );
@@ -56,7 +57,6 @@ const OrderPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // State สำหรับการเลือกไอเทมมาปรับแต่ง (Left Panel)
   const [customizingItem, setCustomizingItem] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState({ spicy: "เผ็ดกลาง", size: "Regular", note: "None" });
 
@@ -108,80 +108,96 @@ const OrderPage = () => {
   const netTotal = subTotal + tax;
 
   return (
-    <div className="py-10 bg-[#111] min-h-screen text-white font-['Kanit']">
-      <main className="container mx-auto px-4 max-w-7xl">
+    <div className="pt-10 pb-20 bg-[#eeeeee] min-h-screen text-[#242424] font-['IBM_Plex_Sans_Thai'] relative overflow-hidden">
+      
+      {/* Background Sprinkles (Random Decorative) */}
+      <div className="absolute top-10 left-10 w-16 h-4 bg-[#FBCFE8] rounded-full rotate-45 -z-10"></div>
+      <div className="absolute top-40 right-20 w-12 h-4 bg-[#A7F3D0] rounded-full -rotate-12 -z-10"></div>
+      <div className="absolute bottom-40 left-1/4 w-20 h-5 bg-[#FFDAB9] rounded-full rotate-[60deg] -z-10"></div>
+
+      <main className="container mx-auto px-4 max-w-7xl relative z-10">
         
-        {/* Page Title */}
+        {/* Page Title with Dancing Letters & Bebas Neue */}
         <div className="flex items-center gap-4 mb-10">
-          <div className="w-1.5 h-8 bg-red-600 rounded-full"></div>
-          <h1 className="text-3xl font-bold tracking-tight">MY CART</h1>
+          <div className="flex gap-1 text-5xl font-['Bebas_Neue'] tracking-widest uppercase font-black drop-shadow-[4px_4px_0_#242424] text-[#e4002b]">
+            <span className="rotate-[-4deg]">M</span>
+            <span className="rotate-[4deg]">Y</span>
+            <span className="ml-3 rotate-[-4deg]">C</span>
+            <span className="rotate-[4deg]">A</span>
+            <span className="rotate-[-4deg]">R</span>
+            <span className="rotate-[4deg]">T</span>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
-          {/* ── LEFT PANEL: Product Preview & Customize (ยึดจาก cart.html) ── */}
-          <div className="lg:col-span-3 bg-[#1a1a1a] rounded-3xl overflow-hidden shadow-2xl border border-gray-800">
-            <div className="h-56 bg-[#222] flex flex-col items-center justify-center relative">
+          {/* ── LEFT PANEL: Product Preview & Customize ── */}
+          <div className="lg:col-span-3 bg-[#ffffff] rounded-[32px] overflow-hidden border border-[#e5e7eb] shadow-[8px_8px_0_#242424]">
+            <div className="h-64 bg-[#eeeeee] border-b-2 border-[#242424] flex flex-col items-center justify-center relative overflow-hidden">
               {customizingItem ? (
                 <>
-                  <span className="absolute top-4 right-4 bg-red-600 text-[10px] px-3 py-1 rounded-full font-bold animate-pulse">กำลังแก้ไข</span>
-                  <div className="text-7xl mb-2">{customizingItem.emoji || "🍗"}</div>
-                  <div className="text-sm font-bold text-gray-300">{customizingItem.name}</div>
+                  {/* Starburst Sticker (Approximated with Brutalist tag) */}
+                  <div className="absolute top-4 right-4 bg-[#DC5F00] text-white text-[10px] px-3 py-1 font-black uppercase tracking-widest border-2 border-[#242424] shadow-[2px_2px_0_#242424] rotate-[12deg] animate-pulse">
+                    EDITING
+                  </div>
+                  <div className="text-8xl mb-4 animate-[bounce_3s_ease-in-out_infinite]">{customizingItem.emoji || "🍗"}</div>
+                  <div className="text-lg font-bold text-[#242424] font-['IBM_Plex_Sans_Thai'] text-center px-4">{customizingItem.name}</div>
                 </>
               ) : (
-                <div className="text-center text-gray-500 p-6">
-                  <ShoppingCart size={40} className="mx-auto mb-4 opacity-20" />
-                  <p className="text-xs">เลือกรายการจากตะกร้า<br/>เพื่อปรับแต่งรสชาติ</p>
+                <div className="text-center text-[#242424]/40 p-6">
+                  <ShoppingCart size={48} className="mx-auto mb-4" />
+                  <p className="text-sm font-bold uppercase font-['IBM_Plex_Sans_Thai']">Select Item<br/>to Customize</p>
                 </div>
               )}
             </div>
 
             {customizingItem ? (
-              <div className="p-6 space-y-5">
-                <div className="flex gap-1.5 mb-2">
-                  <div className="w-2 h-2 rounded-full bg-red-600"></div>
-                  <div className="w-2 h-2 rounded-full bg-gray-700"></div>
-                  <div className="w-2 h-2 rounded-full bg-gray-700"></div>
-                </div>
-                <h3 className="text-lg font-bold">Customize Menu</h3>
+              <div className="p-6 space-y-6">
+                <h3 className="text-2xl font-['Bebas_Neue'] tracking-widest uppercase">Customize Menu</h3>
                 
                 <div className="space-y-4">
                   <div>
-                    <label className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">ความเผ็ด</label>
-                    <select className="w-full bg-[#111] border border-gray-700 rounded-xl p-2.5 text-sm mt-1 focus:border-red-600 outline-none">
+                    <label className="text-xs text-[#DC5F00] uppercase font-bold tracking-wider block mb-1">ระดับความเผ็ด</label>
+                    <select className="w-full bg-[#ffffff] border-2 border-[#242424] rounded-xl p-3 text-sm font-bold focus:shadow-[4px_4px_0_#DC5F00] outline-none transition-all cursor-pointer">
                       <option>ไม่เผ็ด</option><option>เผ็ดน้อย</option><option selected>เผ็ดกลาง</option><option>เผ็ดมาก</option>
                     </select>
                   </div>
                   <div>
-                    <label className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">ขนาด</label>
-                    <select className="w-full bg-[#111] border border-gray-700 rounded-xl p-2.5 text-sm mt-1 focus:border-red-600 outline-none">
+                    <label className="text-xs text-[#DC5F00] uppercase font-bold tracking-wider block mb-1">ขนาด</label>
+                    <select className="w-full bg-[#ffffff] border-2 border-[#242424] rounded-xl p-3 text-sm font-bold focus:shadow-[4px_4px_0_#DC5F00] outline-none transition-all cursor-pointer">
                       <option>Regular</option><option>Large</option><option>Family Bucket</option>
                     </select>
                   </div>
                 </div>
+                
+                {/* The "Street" Button - Secondary */}
                 <button 
                   onClick={() => setCustomizingItem(null)}
-                  className="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-bold transition-all mt-4"
+                  className="w-full py-4 bg-[#DC5F00] text-white rounded-[32px] text-xl font-['Bebas_Neue'] tracking-widest uppercase border-2 border-[#242424] shadow-[8px_8px_0_#242424] hover:translate-y-[4px] hover:shadow-[4px_4px_0_#242424] transition-all duration-300 ease-in-out mt-4 relative overflow-hidden group"
                 >
-                  บันทึกการปรับแต่ง
+                  <span className="relative z-10">Save Customization</span>
+                  <div className="absolute inset-0 bg-[#e4002b] translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300 ease-in-out z-0"></div>
                 </button>
               </div>
             ) : (
-              <div className="p-10 text-center text-gray-600 text-xs italic">
-                คลิกที่รายการในตะกร้าเพื่อแก้ไข
+              <div className="p-10 text-center text-[#242424] text-sm font-bold">
+                คลิกที่รายการในตะกร้าเพื่อปรับแต่งรสชาติ
               </div>
             )}
           </div>
 
-          {/* ── MIDDLE PANEL: Order List (ยึดจาก OrderPage.jsx) ── */}
-          <div className="lg:col-span-5 bg-[#1a1a1a] rounded-3xl p-6 border border-gray-800 shadow-xl">
-            <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
-              Order Summary <span className="bg-gray-800 text-gray-400 text-xs px-2 py-0.5 rounded-md">{orderList.length} รายการ</span>
+          {/* ── MIDDLE PANEL: Order List ── */}
+          <div className="lg:col-span-5 bg-[#ffffff] rounded-[32px] p-6 border border-[#e5e7eb] shadow-[8px_8px_0_#242424]">
+            <h2 className="text-2xl font-['Bebas_Neue'] tracking-widest uppercase mb-6 flex items-center justify-between">
+              Order Summary 
+              <span className="bg-[#242424] text-white text-xs px-3 py-1.5 rounded-full font-['IBM_Plex_Sans_Thai'] tracking-normal">
+                {orderList.length} รายการ
+              </span>
             </h2>
             
-            <div className="space-y-1 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+            <div className="space-y-1 max-h-[600px] overflow-y-auto pr-2">
               {orderList.length === 0 ? (
-                <div className="text-center py-20 text-gray-600 italic">ตะกร้าของคุณยังว่างอยู่</div>
+                <div className="text-center py-20 text-[#242424]/50 font-bold">ตะกร้าของคุณยังว่างอยู่</div>
               ) : (
                 orderList.map((order) => (
                   <div key={order.orderId}>
@@ -203,51 +219,55 @@ const OrderPage = () => {
 
             <button 
               onClick={() => navigate("/menu")}
-              className="mt-6 w-full py-4 border-2 border-dashed border-orange-500/30 text-orange-500 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-orange-500/5 transition-all"
+              className="mt-6 w-full py-4 border-2 border-dashed border-[#242424] text-[#242424] bg-[#eeeeee] rounded-[32px] font-bold flex items-center justify-center gap-2 hover:bg-[#242424] hover:text-white transition-all duration-300 shadow-[4px_4px_0_#e5e7eb]"
             >
-              <PlusCircle size={20} /> เพิ่มรายการอาหารอื่น
+              <PlusCircle size={20} /> เพิ่มเมนูอื่นต่อ
             </button>
           </div>
 
-          {/* ── RIGHT PANEL: Totals (ผสมดีไซน์ cart.html + logic OrderPage) ── */}
+          {/* ── RIGHT PANEL: Totals ── */}
           <div className="lg:col-span-4 space-y-6">
-            <div className="bg-[#1a1a1a] rounded-3xl p-8 border border-gray-800 shadow-2xl">
-              <h2 className="text-center font-bold text-gray-400 uppercase tracking-widest text-sm mb-8">สรุปยอดเงิน</h2>
+            <div className="bg-[#ffffff] rounded-[32px] p-8 border border-[#e5e7eb] shadow-[8px_8px_0_#242424]">
+              <h2 className="text-center font-['Bebas_Neue'] tracking-widest text-[#242424] uppercase text-2xl mb-8 border-b-2 border-[#eeeeee] pb-4">
+                Payment Details
+              </h2>
               
-              <div className="space-y-4 text-sm">
+              <div className="space-y-4 text-base font-bold text-[#242424]">
                 <div className="flex justify-between">
-                  <span className="text-gray-500">ราคารวม</span>
-                  <span className="font-bold">{subTotal.toLocaleString()} บาท</span>
+                  <span className="text-[#242424]/70">ราคารวม</span>
+                  <span>{subTotal.toLocaleString()} THB</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">ภาษี (7%)</span>
-                  <span className="font-bold">{tax.toLocaleString()} บาท</span>
+                  <span className="text-[#242424]/70">ภาษี (7%)</span>
+                  <span>{tax.toLocaleString()} THB</span>
                 </div>
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-gray-500">ค่าจัดส่ง</span>
-                  <span className="text-green-500 font-bold bg-green-500/10 px-2 py-0.5 rounded">FREE</span>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-[#242424]/70">ค่าจัดส่ง</span>
+                  <span className="text-[#DC5F00] font-black bg-[#DC5F00]/10 px-3 py-1 rounded-xl border border-[#DC5F00]">FREE</span>
                 </div>
                 
-                <div className="pt-6 mt-6 border-t-2 border-gray-800 flex justify-between items-end">
-                  <span className="font-bold text-xl">สุทธิ</span>
+                <div className="pt-6 mt-6 border-t-2 border-[#242424] flex justify-between items-end">
+                  <span className="font-black text-xl">สุทธิ</span>
                   <div className="text-right">
-                    <span className="block text-[10px] text-gray-500 uppercase">Total Amount</span>
-                    <span className="text-3xl font-black text-red-600 leading-none">
+                    <span className="block text-xs text-[#242424] font-['Bebas_Neue'] tracking-widest uppercase">Total Amount</span>
+                    <span className="text-4xl font-black text-[#e4002b] leading-none font-['Bebas_Neue'] tracking-wider">
                       {netTotal.toLocaleString()}
                     </span>
                   </div>
                 </div>
               </div>
 
-             
+              {/* The "Street" Button - Primary CTA */}
               <button 
                 onClick={() => navigate("/payment", { state: { subTotal, tax, netTotal, orderData: orderList } })}
-                className="w-full mt-6 py-5 bg-white text-black hover:bg-orange-500 hover:text-white rounded-2xl font-black text-lg transition-all shadow-xl active:scale-95 uppercase tracking-tighter"
+                className="w-full mt-8 py-5 bg-[#e4002b] text-white rounded-[32px] font-['Bebas_Neue'] tracking-widest text-2xl uppercase border-2 border-[#242424] shadow-[8px_8px_0_#242424] hover:translate-y-[4px] hover:shadow-[4px_4px_0_#242424] transition-all duration-300 ease-in-out relative overflow-hidden group"
               >
-                ชำระเงินตอนนี้
+                <span className="relative z-10">Order Now</span>
+                {/* Hover effect - Overlay วิ่งจากซ้ายไปขวา */}
+                <div className="absolute inset-0 bg-[#DC5F00] translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300 ease-in-out z-0"></div>
               </button>
               
-              <p className="text-[9px] text-center text-gray-600 mt-6 tracking-widest uppercase">
+              <p className="text-[10px] text-center text-[#242424]/60 mt-6 tracking-widest uppercase font-bold">
                 Serious Fried Chicken - 100% Quality Guaranteed
               </p>
             </div>
@@ -255,6 +275,9 @@ const OrderPage = () => {
 
         </div>
       </main>
+
+      {/* Black Bottom Bar ปิดท้ายหน้าเว็บ */}
+      <div className="fixed bottom-0 left-0 w-full h-3 bg-[#1a1a1a] z-50"></div>
     </div>
   );
 };
