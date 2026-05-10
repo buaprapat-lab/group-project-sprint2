@@ -34,7 +34,7 @@ export default function BookingPage() {
           onSelectBranch={handleSelectBranch} 
           onUpdateAddress={handleUpdateAddress}
         />
-        <summaryinform
+        <SummaryInform
           orderState={orderState} 
           setOrderState={setOrderState} 
           profile={profile} 

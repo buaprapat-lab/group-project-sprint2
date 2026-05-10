@@ -10,6 +10,7 @@ import InteractivePoolGrid from "../../component/customer/InteractivePoolGrid";
 import PickupConfirmation from "../../component/pickupconfirmation";
 import Check from "../../component/Check";
 import OrderStatus from "../../component/OrderStatus";
+import Bookingcf from "./BookingPage";
 
 export default function IndexPage({ t }) {
   const [showPickup, setShowPickup] = useState(false);
@@ -27,6 +28,7 @@ export default function IndexPage({ t }) {
 
   return (
     <div className="bg-[#eeeeee] min-h-screen flex flex-col font-['IBM_Plex_Sans_Thai']">
+    
       <PickupConfirmation
         isOpen={showPickup}
         onClose={() => setShowPickup(false)}
