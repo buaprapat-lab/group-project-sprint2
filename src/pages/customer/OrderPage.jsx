@@ -7,14 +7,14 @@ import { Trash2, PlusCircle, MessageSquare, ShoppingCart } from "lucide-react";
 const OrderItem = ({ item, orderId, onUpdateQty, onRemove, onEdit, isSelected }) => {
   return (
     <div
-      className={`flex items-center gap-4 p-4 rounded-[32px] transition-all duration-300 ease-in-out cursor-pointer mb-3
+      className={`flex items-center gap-4 p-4 rounded-4xl transition-all duration-300 ease-in-out cursor-pointer mb-3
         ${isSelected 
           ? 'bg-[#FDE68A] border-2 border-[#242424] shadow-[4px_4px_0_#242424]' // เน้นด้วย Sprinkle Yellow
           : 'bg-[#ffffff] border-2 border-[#e5e7eb] hover:border-[#242424] hover:shadow-[4px_4px_0_#242424]'}`}
       onClick={() => onEdit(item)}
     >
       {/* Thumbnail Placeholder */}
-      <div className="w-16 h-16 rounded-[24px] overflow-hidden bg-[#eeeeee] border-2 border-[#242424] flex-shrink-0 flex items-center justify-center text-3xl shadow-[2px_2px_0_#242424]">
+      <div className="w-16 h-16 rounded-3xl overflow-hidden bg-[#eeeeee] border-2 border-[#242424] shrink-0 flex items-center justify-center text-3xl shadow-[2px_2px_0_#242424]">
         <div className="animate-[bounce_3s_infinite]">{item.emoji || "🍗"}</div>
       </div>
       
@@ -113,7 +113,7 @@ const OrderPage = () => {
       {/* Background Sprinkles (Random Decorative) */}
       <div className="absolute top-10 left-10 w-16 h-4 bg-[#FBCFE8] rounded-full rotate-45 -z-10"></div>
       <div className="absolute top-40 right-20 w-12 h-4 bg-[#A7F3D0] rounded-full -rotate-12 -z-10"></div>
-      <div className="absolute bottom-40 left-1/4 w-20 h-5 bg-[#FFDAB9] rounded-full rotate-[60deg] -z-10"></div>
+      <div className="absolute bottom-40 left-1/4 w-20 h-5 bg-[#FFDAB9] rounded-full rotate-60 -z-10"></div>
 
       <main className="container mx-auto px-4 max-w-7xl relative z-10">
         
@@ -132,12 +132,12 @@ const OrderPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
           {/* ── LEFT PANEL: Product Preview & Customize ── */}
-          <div className="lg:col-span-3 bg-[#ffffff] rounded-[32px] overflow-hidden border border-[#e5e7eb] shadow-[8px_8px_0_#242424]">
+          <div className="lg:col-span-3 bg-[#ffffff] rounded-4xl overflow-hidden border border-[#e5e7eb] shadow-[8px_8px_0_#242424]">
             <div className="h-64 bg-[#eeeeee] border-b-2 border-[#242424] flex flex-col items-center justify-center relative overflow-hidden">
               {customizingItem ? (
                 <>
                   {/* Starburst Sticker (Approximated with Brutalist tag) */}
-                  <div className="absolute top-4 right-4 bg-[#DC5F00] text-white text-[10px] px-3 py-1 font-black uppercase tracking-widest border-2 border-[#242424] shadow-[2px_2px_0_#242424] rotate-[12deg] animate-pulse">
+                  <div className="absolute top-4 right-4 bg-[#DC5F00] text-white text-[10px] px-3 py-1 font-black uppercase tracking-widest border-2 border-[#242424] shadow-[2px_2px_0_#242424] rotate-12 animate-pulse">
                     EDITING
                   </div>
                   <div className="text-8xl mb-4 animate-[bounce_3s_ease-in-out_infinite]">{customizingItem.emoji || "🍗"}</div>
@@ -173,10 +173,10 @@ const OrderPage = () => {
                 {/* The "Street" Button - Secondary */}
                 <button 
                   onClick={() => setCustomizingItem(null)}
-                  className="w-full py-4 bg-[#DC5F00] text-white rounded-[32px] text-xl font-['Bebas_Neue'] tracking-widest uppercase border-2 border-[#242424] shadow-[8px_8px_0_#242424] hover:translate-y-[4px] hover:shadow-[4px_4px_0_#242424] transition-all duration-300 ease-in-out mt-4 relative overflow-hidden group"
+                  className="w-full py-4 bg-[#DC5F00] text-white rounded-4xl text-xl font-['Bebas_Neue'] tracking-widest uppercase border-2 border-[#242424] shadow-[8px_8px_0_#242424] hover:translate-y-1 hover:shadow-[4px_4px_0_#242424] transition-all duration-300 ease-in-out mt-4 relative overflow-hidden group"
                 >
                   <span className="relative z-10">Save Customization</span>
-                  <div className="absolute inset-0 bg-[#e4002b] translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300 ease-in-out z-0"></div>
+                  <div className="absolute inset-0 bg-[#e4002b] translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-in-out z-0"></div>
                 </button>
               </div>
             ) : (
@@ -187,7 +187,7 @@ const OrderPage = () => {
           </div>
 
           {/* ── MIDDLE PANEL: Order List ── */}
-          <div className="lg:col-span-5 bg-[#ffffff] rounded-[32px] p-6 border border-[#e5e7eb] shadow-[8px_8px_0_#242424]">
+          <div className="lg:col-span-5 bg-[#ffffff] rounded-4xl p-6 border border-[#e5e7eb] shadow-[8px_8px_0_#242424]">
             <h2 className="text-2xl font-['Bebas_Neue'] tracking-widest uppercase mb-6 flex items-center justify-between">
               Order Summary 
               <span className="bg-[#242424] text-white text-xs px-3 py-1.5 rounded-full font-['IBM_Plex_Sans_Thai'] tracking-normal">
@@ -195,7 +195,7 @@ const OrderPage = () => {
               </span>
             </h2>
             
-            <div className="space-y-1 max-h-[600px] overflow-y-auto pr-2">
+            <div className="space-y-1 max-h-150 overflow-y-auto pr-2">
               {orderList.length === 0 ? (
                 <div className="text-center py-20 text-[#242424]/50 font-bold">ตะกร้าของคุณยังว่างอยู่</div>
               ) : (
@@ -219,7 +219,7 @@ const OrderPage = () => {
 
             <button 
               onClick={() => navigate("/menu")}
-              className="mt-6 w-full py-4 border-2 border-dashed border-[#242424] text-[#242424] bg-[#eeeeee] rounded-[32px] font-bold flex items-center justify-center gap-2 hover:bg-[#242424] hover:text-white transition-all duration-300 shadow-[4px_4px_0_#e5e7eb]"
+              className="mt-6 w-full py-4 border-2 border-dashed border-[#242424] text-[#242424] bg-[#eeeeee] rounded-4xl font-bold flex items-center justify-center gap-2 hover:bg-[#242424] hover:text-white transition-all duration-300 shadow-[4px_4px_0_#e5e7eb]"
             >
               <PlusCircle size={20} /> เพิ่มเมนูอื่นต่อ
             </button>
@@ -227,7 +227,7 @@ const OrderPage = () => {
 
           {/* ── RIGHT PANEL: Totals ── */}
           <div className="lg:col-span-4 space-y-6">
-            <div className="bg-[#ffffff] rounded-[32px] p-8 border border-[#e5e7eb] shadow-[8px_8px_0_#242424]">
+            <div className="bg-[#ffffff] rounded-4xl p-8 border border-[#e5e7eb] shadow-[8px_8px_0_#242424]">
               <h2 className="text-center font-['Bebas_Neue'] tracking-widest text-[#242424] uppercase text-2xl mb-8 border-b-2 border-[#eeeeee] pb-4">
                 Payment Details
               </h2>
@@ -260,11 +260,11 @@ const OrderPage = () => {
               {/* The "Street" Button - Primary CTA */}
               <button 
                 onClick={() => navigate("/payment", { state: { subTotal, tax, netTotal, orderData: orderList } })}
-                className="w-full mt-8 py-5 bg-[#e4002b] text-white rounded-[32px] font-['Bebas_Neue'] tracking-widest text-2xl uppercase border-2 border-[#242424] shadow-[8px_8px_0_#242424] hover:translate-y-[4px] hover:shadow-[4px_4px_0_#242424] transition-all duration-300 ease-in-out relative overflow-hidden group"
+                className="w-full mt-8 py-5 bg-[#e4002b] text-white rounded-4xl font-['Bebas_Neue'] tracking-widest text-2xl uppercase border-2 border-[#242424] shadow-[8px_8px_0_#242424] hover:translate-y-1 hover:shadow-[4px_4px_0_#242424] transition-all duration-300 ease-in-out relative overflow-hidden group"
               >
                 <span className="relative z-10">Order Now</span>
                 {/* Hover effect - Overlay วิ่งจากซ้ายไปขวา */}
-                <div className="absolute inset-0 bg-[#DC5F00] translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-300 ease-in-out z-0"></div>
+                <div className="absolute inset-0 bg-[#DC5F00] translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-in-out z-0"></div>
               </button>
               
               <p className="text-[10px] text-center text-[#242424]/60 mt-6 tracking-widest uppercase font-bold">
