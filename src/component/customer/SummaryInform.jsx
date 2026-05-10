@@ -1,5 +1,5 @@
 // src/components/OrderSetup.jsx
-import React, { useState } from "react";
+import React, { useState,useNavigate } from "react";
 
 export default function SummaryInform({
   orderState,
@@ -280,7 +280,7 @@ export default function SummaryInform({
 
         <button
           disabled={!orderState.branch}
-          onClick={() => alert("ไปหน้า Menu...")}
+          onClick={() => navigate("/payment")}
           className={`px-6 py-3 rounded transition font-bold ${!orderState.branch ? "bg-gray-400 text-gray-600 cursor-not-allowed" : "bg-[#4ade80] text-brand-black hover:bg-green-300"}`}
         >
           Confirm Order

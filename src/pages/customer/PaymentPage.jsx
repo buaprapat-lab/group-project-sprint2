@@ -35,7 +35,7 @@ export default function PaymentPage() {
           </div>
 
           {/* ฝั่งขวา: สรุปคำสั่งซื้อ */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 bg-red-400">
             {/* เช่นเดียวกับ OrderSummary ตรงนี้ควรใช้ Clean White bg-[#ffffff] 
               และทำขอบ/เงาให้เด้งออกมาตามสไตล์ Brutalist
             */}

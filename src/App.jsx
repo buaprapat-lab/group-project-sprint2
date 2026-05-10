@@ -12,6 +12,7 @@ import OrderHistory from "./pages/cashier/OrderHistory";
 import MenuPage from "./pages/customer/MenuPage";
 import PaymentPage from "./pages/customer/PaymentPage";
 import OrderPage from "./pages/customer/OrderPage";
+import BookingPage from "./pages/customer/BookingPage";
 // import DeliveryTracking from "./pages/customer/DeliveryTracking";
 
 
@@ -25,6 +26,8 @@ export default function App() {
         <Route path="/home" element={<IndexPage />} />
         <Route path="/menu" element={<MenuPage />} />
         <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/booking" element={<BookingPage />} />
+
 
 
         {/* เพิ่ม Route ของ chasier / shared (with waiter)  */}
