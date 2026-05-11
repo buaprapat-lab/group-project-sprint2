@@ -50,7 +50,7 @@ export default function SummaryInform({
       </h2>
 
       {/* แถบสีส้ม: สไตล์ Brutalist Card */}
-      <div className="bg-brand-orange p-6 rounded-[2rem] border-[3px] border-brand-black shadow-[8px_8px_0_#242424] flex flex-wrap justify-center sm:justify-start items-center gap-4">
+      <div className="bg-brand-orange p-6 rounded-4xl border-[3px] border-brand-black shadow-[8px_8px_0_#242424] flex flex-wrap justify-center sm:justify-start items-center gap-4">
         <div className="flex flex-col w-full sm:w-auto">
           <label className="font-bebas text-brand-white text-xl tracking-wider mb-1">DATE</label>
           <input
@@ -97,7 +97,7 @@ export default function SummaryInform({
       </div>
 
       {/* รายละเอียดการจอง: Brutalist Card พื้นขาว */}
-      <div className="bg-brand-white p-8 rounded-[2rem] border-[3px] border-brand-black shadow-[8px_8px_0_#242424]">
+      <div className="bg-brand-white p-8 rounded-4xl border-[3px] border-brand-black shadow-[8px_8px_0_#242424]">
         <h3 className="text-3xl font-bebas tracking-widest mb-6 text-brand-black text-center border-b-4 border-brand-black pb-4">
           BOOKING INFORMATION
         </h3>
@@ -106,7 +106,7 @@ export default function SummaryInform({
           {orderState.userAddress && (
             <p className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 border-b-2 border-brand-gray pb-3 bg-brand-gray/50 p-3 rounded-xl">
               <span className="font-bebas text-xl text-brand-orange">CURRENT LOCATION</span>
-              <span className="text-sm truncate max-w-[200px]">{orderState.userAddress}</span>
+              <span className="text-sm truncate max-w-50">{orderState.userAddress}</span>
             </p>
           )}
 
@@ -212,7 +212,7 @@ export default function SummaryInform({
           {isEditing ? (
             <button
               onClick={handleSaveProfile}
-              className="bg-brand-white text-brand-black px-6 py-3 rounded-full font-bebas text-xl tracking-widest border-[3px] border-brand-black shadow-[4px_4px_0_#242424] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#242424] transition-all duration-300"
+              className="bg-brand-white text-brand-black px-6 py-3 rounded-full font-bebas text-xl tracking-widest border-[3px] border-brand-black shadow-[4px_4px_0_#242424] hover:translate-y-0.5 hover:shadow-[2px_2px_0_#242424] transition-all duration-300"
             >
               💾 UPDATE
             </button>
@@ -223,7 +223,7 @@ export default function SummaryInform({
                 setEditOrder({ type: orderState.type, member: orderState.member });
                 setIsEditing(true);
               }}
-              className="bg-brand-white text-brand-black px-6 py-3 rounded-full font-bebas text-xl tracking-widest border-[3px] border-brand-black shadow-[4px_4px_0_#242424] hover:translate-y-[2px] hover:shadow-[2px_2px_0_#242424] transition-all duration-300"
+              className="bg-brand-white text-brand-black px-6 py-3 rounded-full font-bebas text-xl tracking-widest border-[3px] border-brand-black shadow-[4px_4px_0_#242424] hover:translate-y-0.5 hover:shadow-[2px_2px_0_#242424] transition-all duration-300"
             >
               ✏️ EDIT
             </button>
@@ -244,7 +244,7 @@ export default function SummaryInform({
             className={`px-8 py-3 rounded-full font-bebas text-2xl tracking-widest border-[3px] border-brand-black transition-all duration-300 
             ${!orderState.branch 
               ? "bg-gray-300 text-gray-500 cursor-not-allowed shadow-none" 
-              : "bg-brand-red text-brand-white shadow-[6px_6px_0_#242424] hover:translate-y-[2px] hover:shadow-[3px_3px_0_#242424]"}`}
+              : "bg-brand-red text-brand-white shadow-[6px_6px_0_#242424] hover:translate-y-0.5 hover:shadow-[3px_3px_0_#242424]"}`}
           >
             CONFIRM
           </button>

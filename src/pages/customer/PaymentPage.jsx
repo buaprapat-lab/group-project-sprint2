@@ -25,7 +25,7 @@ export default function PaymentPage() {
         </h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-          <div className="lg:col-span-2 bg-white rounded-4xl border-[1px]">
+          <div className="lg:col-span-2 bg-white rounded-4xl border">
             {/* คุณสามารถส่ง bookingData ไปให้ CheckoutSteps นำไปแสดงต่อได้ด้วย เช่น <CheckoutSteps bookingData={bookingData} /> */}
             <CheckoutSteps />
           </div>
