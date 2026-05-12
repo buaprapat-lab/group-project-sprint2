@@ -184,7 +184,7 @@ export default function FinalCTA() {
             }}
             onClick={() => {
               window.scrollTo({ top: 0, behavior: "smooth" });
-              navigate("พร้อมสั่งไก่ทอดแล้ว");
+              ("Future Feature");
             }}
           >
             <span className="text-2xl md:text-3xl tracking-wider text-center leading-none mt-1 -rotate-12 transition-opacity group-hover:hidden">
