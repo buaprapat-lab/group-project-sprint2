@@ -15,6 +15,7 @@ import OrderPage from "./pages/customer/OrderPage";
 import BookingPage from "./pages/customer/BookingPage";
 // import DeliveryTracking from "./pages/customer/DeliveryTracking";
 
+import OrderTrackingPage from "./pages/customer/OrderTrackingPage";
 
 export default function App() {
   return (
@@ -38,8 +39,8 @@ export default function App() {
         <Route path="/cookBoard" element={<CookBoard />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/register" element={<Register />}></Route>
+        <Route path="/order-tracking" element={<OrderTrackingPage />} />
       </Routes>
     </Router>
   );
 }
-
