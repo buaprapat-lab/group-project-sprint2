@@ -1,9 +1,12 @@
 // src/pages/customer/MenuPage.jsx
-import React, { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
-import { ArrowRight, CheckCircle, MapPin } from "lucide-react";
+import React, { useState, useEffect, useContext } from "react"; // <-- เพิ่ม useContext
+import { NavLink, useNavigate } from "react-router-dom"; // <-- เพิ่ม useNavigate
+import { HandFist, ShoppingCart, ArrowRight, CheckCircle } from "lucide-react";
 import MenuCard from "../../component/customer/MenuCard";
 import CartSidebar from "../../component/customer/CartSidebar";
+import { OrdersContext } from "../../context/ordersContext/OrdersContext"; // <-- Import Context ของตะกร้า
+import { useSearchParams } from "react-router-dom";
+import { ArrowRight, CheckCircle, MapPin } from "lucide-react";
 import ProductModal from "../../component/customer/ProductModal";
 import {
   PROMOTIONS,
@@ -13,13 +16,12 @@ import {
 } from "../../assets/menuData";
 
 const MenuPage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  // เซ็ต Tab เริ่มต้นจาก URL
-  const initialTab = searchParams.get("tab") || "all";
-  const [activeTab, setActiveTab] = useState(initialTab);
-
-  // ดึงตะกร้าจาก LocalStorage
+  const PROMOS = menuData;
+  const navigate = useNavigate(); // <-- ประกาศใช้ navigate เพื่อเปลี่ยนหน้า
+  // เรียกใช้ Context ของตะกร้าเพื่อส่งข้อมูลข้ามหน้า
+  const { orderList, setOrderList } = useContext(OrdersContext);
+  // --- States ---
+  const [activeTab, setActiveTab] = useState("all");
   const [cart, setCart] = useState(() => {
     const savedCart = localStorage.getItem("crispyCart");
     return savedCart ? JSON.parse(savedCart) : [];
@@ -65,6 +67,12 @@ const MenuPage = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // --- Functions ---
+  const handleAddToCart = (id, name) => {
+    // 1. ดึงข้อมูลเมนูแบบเต็มมาจาก MENU array
+    const fullMenuItem = MENU.find((m) => m.id === id);
+
+    // 2. อัปเดตตะกร้า Local (สำหรับ Sidebar ปกติของคุณ)
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
     setSearchParams(tabId === "all" ? {} : { tab: tabId });
@@ -116,6 +124,43 @@ const MenuPage = () => {
       return [...prev, { id, qty }];
     });
 
+    // 3. อัปเดตข้อมูลส่งไปหน้า OrderPage ผ่าน Context
+    setOrderList((prevOrders) => {
+      // สมมติว่าตะกร้าปัจจุบันคือ Order ก้อนแรก (หรือสร้างใหม่ถ้ายังไม่มี)
+      let currentOrder =
+        prevOrders.length > 0
+          ? { ...prevOrders[0] }
+          : { orderId: Date.now().toString(), orderList: [] };
+      let listKey = currentOrder.List ? "List" : "orderList";
+      let currentItems = currentOrder[listKey] || [];
+
+      // เช็คว่ามีสินค้านี้ใน Context หรือยัง
+      const existingItemIndex = currentItems.findIndex(
+        (item) => item.id === id,
+      );
+
+      if (existingItemIndex >= 0) {
+        // ถ้ามีแล้ว เพิ่ม quantity
+        currentItems[existingItemIndex].quantity += 1;
+      } else {
+        // ถ้ายังไม่มี เพิ่ม item ใหม่เข้าไป โดยจัด Format ให้ตรงกับที่ OrderPage ต้องการ
+        currentItems.push({
+          id: id,
+          name: name,
+          price: fullMenuItem ? fullMenuItem.price : 0, // ส่งราคาไปด้วย
+          emoji: fullMenuItem ? fullMenuItem.emoji : "🍗",
+          quantity: 1,
+          note: "None",
+          size: "Regular",
+        });
+      }
+
+      currentOrder[listKey] = currentItems;
+      return [currentOrder]; // อัปเดต Context
+    });
+    navigate("/order");
+
+    // โชว์ Toast
     setToastMsg(`Added: ${name}`);
     setTimeout(() => setToastMsg(""), TOAST_DURATION_MS);
 
@@ -200,8 +245,8 @@ const MenuPage = () => {
             >
               <div className="absolute inset-0">
                 <img
-                  src={promo.img}
-                  alt={promo.title}
+                  src={promo.image}
+                  alt={promo.name}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.target.src =
@@ -215,7 +260,7 @@ const MenuPage = () => {
                   {promo.tag}
                 </span>
                 <h2 className="font-['Bebas_Neue'] text-5xl leading-[0.9] my-2 drop-shadow-md">
-                  {promo.title}
+                  {promo.name}
                 </h2>
                 <div className="font-['Bebas_Neue'] text-4xl mb-4">
                   {promo.price}
@@ -305,19 +350,18 @@ const MenuPage = () => {
         </main>
       </div>
 
-      {/* Mobile Cart Bar (โชว์เฉพาะเวลาหน้าจอเล็ก) */}
-      {totalItems > 0 && (
-        <div
-          className="md:hidden fixed bottom-0 left-0 right-0 bg-[#242424] p-4 flex justify-between items-center text-white z-40 border-t-4 border-[#e4002b] cursor-pointer"
-          onClick={() => setIsCartOpen(true)}
-        >
-          <div>
-            <div className="text-xs opacity-60 uppercase font-bold">
-              {totalItems} Items
-            </div>
-            <div className="text-xl font-black text-[#e4002b]">
-              ฿{totalPrice.toLocaleString()}.-
-            </div>
+      {/* --- MOBILE CART STICKY BAR --- */}
+      <div
+        className="md:hidden fixed bottom-0 left-0 right-0 bg-[#242424] p-4 flex justify-between items-center text-white z-40 border-t-4 border-[#e4002b] cursor-pointer"
+        // onClick={() => setIsCartOpen(true)} // <-- เอาของเก่าที่เปิด Sidebar ออก
+        onClick={() => navigate("/order")} // <-- สั่งให้เปลี่ยน URL ไปหน้าตะกร้า (เปลี่ยน path "/order" ตามที่คุณตั้งค่า Route ไว้)
+      >
+        <div>
+          <div className="text-xs opacity-60 uppercase font-bold">
+            {totalItems} Items
+          </div>
+          <div className="text-xl font-black text-[#e4002b]">
+            ฿{totalPrice.toLocaleString()}.-
           </div>
           <button className="bg-[#e4002b] px-6 py-2 rounded-full font-black text-sm font-['Bebas_Neue'] shadow-lg flex items-center gap-2">
             VIEW CART <ArrowRight size={16} />

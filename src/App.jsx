@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbarmenu from "./component/Navbarmenu";
 import CookBoard from "./pages/CookBoard";
 import IndexPage from "./pages/customer/IndexPage";
-import Order from "./pages/Order";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CheckoutPage from "./pages/cashier/CheckoutPage";
@@ -11,6 +10,11 @@ import TableMap from "./pages/shared/TableMap";
 import OrderList from "./pages/cashier/OrderList";
 import OrderHistory from "./pages/cashier/OrderHistory";
 import MenuPage from "./pages/customer/MenuPage";
+import PaymentPage from "./pages/customer/PaymentPage";
+import OrderPage from "./pages/customer/OrderPage";
+import BookingPage from "./pages/customer/BookingPage";
+// import DeliveryTracking from "./pages/customer/DeliveryTracking";
+
 import OrderTrackingPage from "./pages/customer/OrderTrackingPage";
 
 export default function App() {
@@ -19,9 +23,13 @@ export default function App() {
       <Navbarmenu />
       <Routes>
         <Route path="/" element={<IndexPage />} />
-        <Route path="/order" element={<Order />} />
+        <Route path="/order" element={<OrderPage />} />
         <Route path="/home" element={<IndexPage />} />
         <Route path="/menu" element={<MenuPage />} />
+        <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/booking" element={<BookingPage />} />
+
+
 
         {/* เพิ่ม Route ของ chasier / shared (with waiter)  */}
         <Route path="/cashier/checkout" element={<CheckoutPage />} />

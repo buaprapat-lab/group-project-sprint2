@@ -1,6 +1,14 @@
 import { UserContext } from "./UserContext";
 import { useState, useEffect } from "react";
 
+export const UserProvider=({children})=>{
+const [myUserInfo,setMyUserInfo]=useState(JSON.parse( localStorage.getItem('userInfo')));
+// const [myUserInfo,setMyUserInfo]=useState();
+useEffect(()=>{
+    console.log(localStorage.getItem('uerInfo'))
+localStorage.setItem('userInfo',JSON.stringify(myUserInfo));
+},[myUserInfo])
+return(
 /*
 ขออนุญาตแก้โค้ดตรงไฟล์ UserProvider.jsx คับ
 พอดีตอนรันเทสบนเบราว์เซอร์ที่ยังไม่เคย Login พอมันเปิดหน้าเว็บมามันติด Error จอขาว 
