@@ -14,22 +14,43 @@ import PaymentPage from "./pages/customer/PaymentPage";
 import OrderPage from "./pages/customer/OrderPage";
 import BookingPage from "./pages/customer/BookingPage";
 // import DeliveryTracking from "./pages/customer/DeliveryTracking";
-
 import OrderTrackingPage from "./pages/customer/OrderTrackingPage";
+import ProtectedRoute from "./component/ProtectedRoute";
 
 export default function App() {
   return (
     <Router>
       <Navbarmenu />
       <Routes>
+        {/* PUBLIC ROUTES (ใครก็เข้าได้ ไม่ต้องล็อกอิน) */}
         <Route path="/" element={<IndexPage />} />
-        <Route path="/order" element={<OrderPage />} />
         <Route path="/home" element={<IndexPage />} />
         <Route path="/menu" element={<MenuPage />} />
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="/booking" element={<BookingPage />} />
 
+        {/* CUSTOMER ROUTES (ต้องล็อกอิน และเป็น Customer)
 
+          <Route path="/order" element={
+          <ProtectedRoute allowedRoles={["customer"]}>
+            <OrderPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/payment" element={
+          <ProtectedRoute allowedRoles={["customer"]}>
+            <PaymentPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/booking" element={
+          <ProtectedRoute allowedRoles={["customer"]}>
+            <BookingPage />
+          </ProtectedRoute>
+        } />
+        <Route path="/order-tracking" element={
+          <ProtectedRoute allowedRoles={["customer"]}>
+            <OrderTrackingPage />
+          </ProtectedRoute>
+        } /> */}
 
         {/* เพิ่ม Route ของ chasier / shared (with waiter)  */}
         <Route path="/cashier/checkout" element={<CheckoutPage />} />

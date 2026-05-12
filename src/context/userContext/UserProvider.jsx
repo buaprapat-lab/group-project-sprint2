@@ -1,3 +1,5 @@
+// คอยจำว่า "ตอนนี้ใคร Login อยู่" โดยดึงข้อมูลจาก localStorage
+
 import { useState, useEffect } from "react";
 import { UserContext } from "./UserContext";
 
